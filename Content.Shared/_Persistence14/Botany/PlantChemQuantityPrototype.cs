@@ -48,21 +48,21 @@ public partial struct NutrientRequirement
     [DataField] public FixedPoint2 BonusAmount = FixedPoint2.Zero;
 }
 
-[Serializable, NetSerializable]
-public struct ToleranceModifier
+[DataDefinition]
+public partial struct ToleranceModifier
 {
     /// <summary>
     /// Is added to the minimum pressure or heat tolerance of the plant.
     /// </summary>
-    [DataField("Low")] public float LowToleranceModifier;
+    [DataField("low")] public float LowToleranceModifier = 0f;
 
     /// <summary>
     /// Is added to the maximum pressure or heat tolerance of the plant.
     /// </summary>
-    [DataField("High")] public float HighToleranceModifier;
+    [DataField("high")] public float HighToleranceModifier = 0f;
 
     /// <summary>
     /// The amount of damage the plant takes from improper pressure or heat is multiplied by this amount
     /// </summary>
-    [DataField("Damage")] public float DamageMultiplier; // Multiplied instead of added to prevent plants that heal from improper conditions.
+    [DataField("damage")] public float DamageMultiplier = 0f; // Multiplied instead of added to prevent plants that heal from improper conditions.
 }
