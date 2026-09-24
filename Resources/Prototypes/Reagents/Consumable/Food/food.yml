@@ -14,7 +14,7 @@
   plantMetabolism:
   - !type:PlantAdjustNutrient # Persistence 14
     amount: 1.5
-    type: Nutrient
+    nutrient: Nutrient
   - !type:PlantAdjustHealth
     amount: 0.75
   pricePerUnit: 2
@@ -43,7 +43,7 @@
   plantMetabolism:
   - !type:PlantAdjustNutrient # Persistence 14
     amount: 0.5
-    type: Nutrient
+    nutrient: Nutrient
   - !type:PlantAdjustHealth
     amount: 1.5
   pricePerUnit: 2.5
