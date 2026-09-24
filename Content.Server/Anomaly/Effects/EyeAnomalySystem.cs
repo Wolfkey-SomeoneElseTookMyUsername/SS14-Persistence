@@ -33,6 +33,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using System.Linq;
+using Content.Server.Mobs;
 
 namespace Content.Server.Anomaly.Effects;
 
@@ -102,7 +103,7 @@ public sealed partial class EyeAnomalySystem : EntitySystem
         if (!_pid.TryResolveId(ent.Comp.OriginalBody, out var body))
             return;
 
-        args.SpeakerOverride = body.Owner;
+        // args.SpeakerOverride = body.Owner;
 
         if (_pid.TryResolveId(ent.Comp.Eye, out var eye) && TryComp<EyeAnomalyComponent>(eye.Owner, out var eyeComp))
         {
@@ -273,7 +274,7 @@ public sealed partial class EyeAnomalySystem : EntitySystem
         tether.OldFactions.Clear();
         tether.OldFactions.UnionWith(npcFaction.Factions);
         _npcFaction.ClearFactions((victim, npcFaction), false);
-        _npcFaction.AddFaction((victim, npcFaction), "EyeThrall");
+        _npcFaction.AddFaction((victim, npcFaction), tether.EyeFactionId);
     }
 
     /// <summary>
@@ -363,6 +364,7 @@ public sealed partial class EyeAnomalySystem : EntitySystem
         {
             EnsureComp<MobStateActionsComponent>(vessel);
             EntityUid? sosAction = null;
+#pragma warning disable RA0033 // Parameter forbids literal values
             if (_actions.AddAction(vessel, ref sosAction, "ActionAcceptDeath"))
             {
                 tether.SosActionEntity = sosAction;
@@ -372,6 +374,7 @@ public sealed partial class EyeAnomalySystem : EntitySystem
                 // immediately - clear that startup cooldown right away.
                 _actions.ClearCooldown(sosAction);
             }
+#pragma warning restore RA0033 // Parameter forbids literal values
         }
 
         RecomputeAggregatedRadioChannels(ent);
@@ -465,9 +468,10 @@ public sealed partial class EyeAnomalySystem : EntitySystem
         var template = hadMindShield ? ent.Comp.SosMessageMindShielded : ent.Comp.SosMessageUnshielded;
 
         var mapPos = _transform.GetWorldPosition(victim);
+        var xform = Transform(victim);
         var message = string.Format(template, Name(victim), mapPos.X, mapPos.Y);
 
-        _radio.SendRadioMessage(victim, message, "Common", victim, true);
+        _radio.SendRadioMessage(victim, message, ProtoMan.Index(ent.Comp.BroadcastChannel), victim, true);
 
         actions.SOSCooldown = _timing.CurTime + TimeSpan.FromSeconds(_configurationManager.GetCVar(CCVars.AcceptDeathTime));
     }
@@ -569,7 +573,7 @@ public sealed partial class EyeAnomalySystem : EntitySystem
         // holder's grace window, before their mind is ever captured), so a holder who escapes
         // DURING grace also needs their faction restored here, even without an HTNComponent.
         var npcFaction = EnsureComp<NpcFactionMemberComponent>(victim);
-        _npcFaction.RemoveFaction((victim, npcFaction), "EyeThrall", false);
+        _npcFaction.RemoveFaction((victim, npcFaction), tether.EyeFactionId, false);
         _npcFaction.AddFactions((victim, npcFaction), tether.OldFactions);
         tether.OldFactions.Clear();
 

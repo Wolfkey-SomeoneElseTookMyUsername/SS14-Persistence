@@ -194,7 +194,16 @@ namespace Content.Server.GameTicking
 
             _bankSystem.EnsureAccount(character.Name, 50);
             if (_crewMetaRecords.MetaRecords != null)
-                _crewMetaRecords.MetaRecords.CreateRecord(character!.Name, out _);
+            {
+                _crewMetaRecords.MetaRecords.CreateRecord(character!.Name, out var createdRecord);
+                if(createdRecord != null)
+                {
+                    if (character.Alignment != null) createdRecord.Alignment = character.Alignment.Value;
+                    if (character.UniverseOrigin != null) createdRecord.Origin = character.UniverseOrigin.Value;
+                    if (character.Motive != null) createdRecord.Motive = character.Motive.Value;
+                }
+            }
+            
             var mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(station.Value, jobId, character);
             DebugTools.AssertNotNull(mobMaybe);
             var mob = mobMaybe!.Value;
@@ -703,7 +712,14 @@ namespace Content.Server.GameTicking
             Entity<MindComponent?>? mind = player.GetMind();
             if (mind == null)
             {
-                var name = GetPlayerProfile(player)!.Name;
+                var profile = GetPlayerProfile(player);
+                string name = "Chuck Testa";
+                if (profile == null)
+                {
+                    _sawmill.Warning($"Player {player} has no profile, cannot spawn as observer.");
+                }
+                else
+                { name = profile.Name; }
                 var (mindId, mindComp) = _mind.CreateMind(player.UserId, name);
                 mind = (mindId, mindComp);
                 _mind.SetUserId(mind.Value, player.UserId);
