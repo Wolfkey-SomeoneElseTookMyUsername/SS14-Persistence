@@ -17,31 +17,35 @@ public sealed partial class PlantChemQuantityPrototype : IPrototype
     public string ID { get; private set; } = default!;
 
     [DataField] public FixedPoint2 BaseAmount;
+
     [DataField] public Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> Requirements;
+
+    [DataField] public ToleranceModifier? HeatToleranceModifier;
+    [DataField] public ToleranceModifier? PressureToleranceModifier;
 }
 
-[Serializable, NetSerializable]
-public struct NutrientRequirement
+[DataDefinition]
+public partial struct NutrientRequirement
 {
     /// <summary>
     /// The nutrient required by this nutrient requirement
     /// </summary>
-    [DataField("Nutrient")] public ProtoId<PlantNutrientPrototype> Nutrient;
+    [DataField] public ProtoId<PlantNutrientPrototype> Nutrient;
 
     /// <summary>
     /// Minimum amount of nutrient required for a plant with this requirement to grow.
     /// </summary>
-    [DataField("Requirement")] public FixedPoint2 Requirement;
+    [DataField] public FixedPoint2 Requirement = FixedPoint2.Zero;
 
     /// <summary>
     /// Amount of nutrient above the minimum requirement needed to get all bonus chemicals.
     /// </summary>
-    [DataField("BonusRequirement")] public FixedPoint2 BonusRequirement;
+    [DataField] public FixedPoint2 BonusRequirement = FixedPoint2.Zero;
 
     /// <summary>
     /// Amount of extra chemicals added to the plant's produce when the BonusRequirement is fulfilled.
     /// </summary>
-    [DataField("BonusAmount")] public FixedPoint2 BonusAmount;
+    [DataField] public FixedPoint2 BonusAmount = FixedPoint2.Zero;
 }
 
 [Serializable, NetSerializable]
