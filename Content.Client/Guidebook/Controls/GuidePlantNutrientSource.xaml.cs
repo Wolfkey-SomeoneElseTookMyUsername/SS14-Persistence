@@ -137,7 +137,7 @@ public sealed partial class GuidePlantNutrientSource : BoxContainer, ISearchable
 
     [PublicAPI]
     private void SetNutrients(
-        Dictionary<ProtoId<MixingCategoryPrototype>, ReactantPrototype> reactants,
+        Dictionary<ProtoId<MixingCategoryPrototype>, ReactantInfo> reactants,
         ref Container container,
         IPrototypeManager protoMan,
         bool addLinks = true)
