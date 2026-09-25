@@ -77,6 +77,12 @@
   color: "#848789"
 
 - type: plantNutrient
+  id: Copper
+  name: nutrient-name-aluminum
+  desc: nutrient-desc-aluminum
+  color: "#848789"
+
+- type: plantNutrient
   id: Gold
   name: nutrient-name-gold
   desc: nutrient-desc-gold
