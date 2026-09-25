@@ -108,8 +108,8 @@ public sealed partial class GuidePlantNutrientSource : BoxContainer, ISearchable
         Dictionary<string, FixedPoint2> nutrients = new();
         foreach (var effect in reagent.PlantMetabolisms)
         {
-            if (effect is PlantAdjustNutrient adjustNutrient)
-                nutrients.Add(adjustNutrient.Nutrient, adjustNutrient.Amount);
+            if (effect is PlantAdjustNutrient adjustNutrient && !nutrients.TryAdd(adjustNutrient.Nutrient, adjustNutrient.Amount))
+                nutrients[adjustNutrient.Nutrient] += adjustNutrient.Amount;
         }
         return nutrients;
     }
