@@ -78,8 +78,8 @@
 
 - type: plantNutrient
   id: Copper
-  name: nutrient-name-aluminum
-  desc: nutrient-desc-aluminum
+  name: nutrient-name-copper
+  desc: nutrient-desc-copper
   color: "#848789"
 
 - type: plantNutrient

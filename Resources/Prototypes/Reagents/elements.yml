@@ -415,7 +415,7 @@
   plantMetabolism:
   - !type:PlantAdjustNutrient
     amount: 1
-    nutrient: Silver
+    nutrient: Tin
 
 - type: reagent
   id: Sulfur
