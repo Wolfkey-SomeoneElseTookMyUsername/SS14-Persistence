@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using Content.Shared._Persistence14.Botany;
 using Content.Shared.Botany.Components;
 using Content.Shared.Botany.Items.Components;
 using Content.Shared.EntityEffects;
@@ -51,10 +52,7 @@ public sealed partial class BotanySystem
 
         foreach (var (chem, quantity) in chems.Chemicals)
         {
-            var amount = quantity.Min;
-            if (quantity.PotencyDivisor > 0 && plant.Potency > 0)
-                amount += plant.Potency / quantity.PotencyDivisor;
-            amount = FixedPoint2.Clamp(amount, quantity.Min, quantity.Max);
+            var amount = 1; // TODO: Properly implement this
             solution.Comp.Solution.MaxVolume += amount;
             solution.Comp.Solution.AddReagent(chem, amount);
         }
