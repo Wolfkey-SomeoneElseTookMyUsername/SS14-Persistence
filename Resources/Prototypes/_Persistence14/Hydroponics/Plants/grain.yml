@@ -1,0 +1,23 @@
+- type: entity
+  parent: BasePlant
+  id: WheatPlants
+  name: wheat stalk
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/wheat.rsi
+  - type: PlantData
+    name: seeds-wheat-name
+    packetPrototype: WheatSeeds
+    productPrototypes: [ WheatBushel ]
+    mutationPrototypes: [ MeatWheatPlants ]
+  - type: Plant
+    lifespan: 25
+    maturation: 6
+    production: 3
+    yield: 3
+  - type: PlantChemicals
+    chemicals:
+      Nutriment:
+        id: BasicNutriment5
+      Flour:
+        id: BasicGrain15
