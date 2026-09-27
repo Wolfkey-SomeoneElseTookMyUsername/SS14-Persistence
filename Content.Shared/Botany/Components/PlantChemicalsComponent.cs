@@ -47,7 +47,7 @@ public partial struct PlantChemQuantity
     public float PotencyDivisor;*/
 
     /// <summary>
-    /// Persistence: Prototype containing amount, nutrient requirements, and tolerance modifiers of the chemical.
+    /// Persistence: Prototype containing base amount, nutrient requirements, and tolerance modifiers of the chemical.
     /// </summary>
     [DataField]
     public ProtoId<PlantChemQuantityPrototype> Id;
