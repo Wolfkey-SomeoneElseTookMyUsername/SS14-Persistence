@@ -8,12 +8,14 @@ using Content.Shared.FixedPoint;
 using Content.Shared.Random.Helpers;
 using Robust.Shared.Map;
 using Robust.Shared.Random;
+using Robust.Shared.Prototypes; // Persistence 14
 
 namespace Content.Shared.Botany.Systems;
 
 public sealed partial class BotanySystem
 {
     [Dependency] private SharedEntityEffectsSystem _entityEffects = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!; // Persistence 14
 
     [SubscribeLocalEvent]
     private void OnProduceExamined(Entity<ProduceComponent> ent, ref ExaminedEvent args)
@@ -52,7 +54,8 @@ public sealed partial class BotanySystem
 
         foreach (var (chem, quantity) in chems.Chemicals)
         {
-            var amount = 1; // TODO: Properly implement this
+            var quantityProto = _prototypeManager.Index(quantity.Id);
+            var amount = quantityProto.BaseAmount; // TODO: Properly implement this
             solution.Comp.Solution.MaxVolume += amount;
             solution.Comp.Solution.AddReagent(chem, amount);
         }

@@ -50,7 +50,7 @@ public partial struct PlantChemQuantity
     /// Persistence: Prototype containing amount, nutrient requirements, and tolerance modifiers of the chemical.
     /// </summary>
     [DataField]
-    public ProtoId<PlantChemQuantityPrototype> Proto;
+    public ProtoId<PlantChemQuantityPrototype> Id;
 
     /// <summary>
     /// Inherent chemical is one that is NOT result of mutation or crossbreeding. These chemicals are removed if species mutation is executed.
