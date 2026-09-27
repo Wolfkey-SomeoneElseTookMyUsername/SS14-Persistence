@@ -79,7 +79,7 @@ public sealed partial class GuidePlantNutrientSource : BoxContainer, ISearchable
         SetMixingCategory(categories, sysMan);
     }
 
-    /*public GuidePlantNutrientSource(GasPrototype prototype,
+    public GuidePlantNutrientSource(GasPrototype prototype,
         IReadOnlyList<ProtoId<MixingCategoryPrototype>> categories,
         IPrototypeManager protoMan,
         IEntitySystemManager sysMan) : this(protoMan)
@@ -101,7 +101,7 @@ public sealed partial class GuidePlantNutrientSource : BoxContainer, ISearchable
             SetNutrients(quantity, ref productContainer, protoMan, false);
         }
         SetMixingCategory(categories, sysMan);
-    }*/
+    }
 
     private Dictionary<string, FixedPoint2> GetNutrients(ReagentPrototype reagent)
     {

@@ -69,7 +69,7 @@ public sealed class BotanyGuideDataSystem : SharedBotanyGuideDataSystem
             }
         }
 
-        /*foreach (var gas in PrototypeManager.EnumeratePrototypes<GasPrototype>())
+        foreach (var gas in PrototypeManager.EnumeratePrototypes<GasPrototype>())
         {
             if (gas.Nutrient == null)
                 continue;
@@ -78,7 +78,7 @@ public sealed class BotanyGuideDataSystem : SharedBotanyGuideDataSystem
                 new() { DefaultCondenseCategory },
                 gas);
             _PlantNutrientSources[gas.Nutrient].Add(data);
-        }*/
+        }
     }
 
     public List<PlantNutrientSourceData> GetPlantNutrientSources(string id)

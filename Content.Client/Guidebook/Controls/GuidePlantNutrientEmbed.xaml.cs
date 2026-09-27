@@ -2,7 +2,7 @@ using Content.Client.Chemistry.EntitySystems;
 using Content.Client.Guidebook.Richtext;
 using Content.Client.Message;
 using Content.Client.UserInterface.ControlExtensions;
-//using Content.Client._Persistence14.Botany;
+using Content.Client._Persistence14.Botany;
 using Content.Shared.CCVar;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared._Persistence14.Botany;
@@ -35,7 +35,7 @@ public sealed partial class GuidePlantNutrientEmbed : BoxContainer, IDocumentTag
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IConfigurationManager _config = default!;
 
-    //private readonly BotanyGuideDataSystem _botanyGuideData;
+    private readonly BotanyGuideDataSystem _botanyGuideData;
     private readonly ISawmill _sawmill;
 
     public IPrototype? RepresentedPrototype { get; private set; }
@@ -45,7 +45,7 @@ public sealed partial class GuidePlantNutrientEmbed : BoxContainer, IDocumentTag
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
         _sawmill = _logManager.GetSawmill("guidebook.plantNutrient");
-        //_botanyGuideData = _systemManager.GetEntitySystem<BotanyGuideDataSystem>();
+        _botanyGuideData = _systemManager.GetEntitySystem<BotanyGuideDataSystem>();
         MouseFilter = MouseFilterMode.Stop;
     }
 
@@ -183,7 +183,7 @@ public sealed partial class GuidePlantNutrientEmbed : BoxContainer, IDocumentTag
         }
         #endregion
 
-        //GenerateSources(nutrient);
+        GenerateSources(nutrient);
 
         FormattedMessage description = new();
         description.AddText(nutrient.LocalizedDescription);
@@ -200,7 +200,7 @@ public sealed partial class GuidePlantNutrientEmbed : BoxContainer, IDocumentTag
                 return true;
         }
         return false;
-    }/*
+    }
     private void GenerateSources(PlantNutrientPrototype reagent)
     {
         var sources = _botanyGuideData.GetPlantNutrientSources(reagent.ID);
@@ -233,5 +233,5 @@ public sealed partial class GuidePlantNutrientEmbed : BoxContainer, IDocumentTag
             }
         }
     }
-*/
+
 }
