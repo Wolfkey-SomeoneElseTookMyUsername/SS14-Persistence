@@ -39,8 +39,8 @@ nutrient-desc-iron = Don't let your plants get rusty.
 nutrient-name-aluminum = aluminum
 nutrient-desc-aluminum = I can't believe it's not tin!
 
-nutrient-name-aluminum = copper
-nutrient-desc-aluminum = I can believe it's not tin.
+nutrient-name-copper = copper
+nutrient-desc-copper = I can believe it's not tin.
 
 nutrient-name-gold = gold
 nutrient-desc-gold = Gold leaf isn't actually made by infusing plants with gold.
@@ -70,7 +70,7 @@ nutrient-name-nitrous-oxide = nitrous oxide
 nutrient-desc-nitrous-oxide = Give your plants a well-deserved rest
 
 nutrient-name-plasma = plasma
-nutrient-desc-plasma = Despite being called plasma, it's actually a {solid/liquid/gas}.
+nutrient-desc-plasma = Despite being called plasma, it's actually a (solid/liquid/gas).
 
 nutrient-name-frezon = frezon
 nutrient-desc-frezon = brrrr!
