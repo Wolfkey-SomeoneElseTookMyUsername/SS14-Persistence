@@ -381,15 +381,3 @@
     Fertilizer:
       bonusRequirement: 0.2
       bonusAmount: 1
-
-- type: plantChemQuantity
-  id: CarrotOculine
-  baseAmount: 2
-  requirements:
-    Nutrient:
-      requirement: 0.5
-      bonusRequirement: 0.5
-      bonusAmount: 1
-    Fertilizer:
-      bonusRequirement: 0.6
-      bonusAmount: 3
