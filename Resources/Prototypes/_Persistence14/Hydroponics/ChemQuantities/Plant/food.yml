@@ -248,7 +248,7 @@
       bonusAmount: 9
 
 - type: plantChemQuantity
-  id: HolyMelonWater # Currently the same as AbsorbWater4, but kept separate in case holy water becomes more valuable.
+  id: HolyMelonWater # Currently the same as MelonWater, but kept separate in case holy water becomes more valuable.
   baseAmount: 1
   requirements:
     Water:
