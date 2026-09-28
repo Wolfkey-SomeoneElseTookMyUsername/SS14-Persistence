@@ -230,7 +230,7 @@
       bonusAmount: 3
 
 - type: plantChemQuantity
-  id: TomatoWater
+  id: BaseWater4
   baseAmount: 1
   requirements:
     Water:
