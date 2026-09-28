@@ -48,6 +48,19 @@
       bonusAmount: 2
 
 - type: plantChemQuantity
+  id: BasicNutriment6
+  baseAmount: 1
+  requirements:
+    Water:
+      requirement: 1
+    Fertilizer:
+      bonusRequirement: 0.5
+      bonusAmount: 2.5
+    CarbonDioxide:
+      bonusRequirement: 0.25
+      bonusAmount: 2.5
+
+- type: plantChemQuantity
   id: BasicNutriment7
   baseAmount: 1
   requirements:

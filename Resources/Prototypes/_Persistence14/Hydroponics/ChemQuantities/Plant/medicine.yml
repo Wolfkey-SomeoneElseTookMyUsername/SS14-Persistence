@@ -12,7 +12,7 @@
       bonusAmount: 2
 
 - type: plantChemQuantity
-  id: Bicaridine10
+  id: Bicaridine20
   baseAmount: 5
   requirements:
     Nutrient:
