@@ -27,7 +27,7 @@ public sealed partial class PlantGrowthComponent : Component
     public float NutrientConsumption = 0.75f;*/
 
     /// <summary>
-    /// Base amount of nutrients required for and consumed at harvest.
+    /// Persistence: Base amount of nutrients required for and consumed at harvest.
     /// </summary>
     [DataField, AutoNetworkedField]
     public Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2> BaseRequirements;
