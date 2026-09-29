@@ -24,7 +24,7 @@
   - type: PlantChemicals
     chemicals:
       Vitamin:
-        BasicVitamin5
+        id: BasicVitamin5
 
 - type: entity
   parent: BasePlant
@@ -100,7 +100,7 @@
       SpaceDrugs:
         id: RainbowCannabisSpaceMirage
       Lipolicide:
-        RainbowCannabisLipolicide
+        id: RainbowCannabisLipolicide
       MindbreakerToxin:
         id: RainbowCannabisMindbreaker
       Happiness:
