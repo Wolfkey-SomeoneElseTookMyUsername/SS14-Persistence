@@ -1,5 +1,8 @@
 using Content.Shared.Botany.Systems;
+using Content.Shared._Persistence14.Botany; // Persistence 14
+using Content.Shared.FixedPoint; // Persistence 14
 using Robust.Shared.GameStates;
+using Robust.Shared.Prototypes; // Persistence 14
 
 namespace Content.Shared.Botany.Components;
 
@@ -10,6 +13,7 @@ namespace Content.Shared.Botany.Components;
 [Access(typeof(PlantGrowthSystem))]
 public sealed partial class PlantGrowthComponent : Component
 {
+    /* Persistence 14: Commented this out
     /// <summary>
     /// Amount of water consumed per growth tick.
     /// </summary>
@@ -20,5 +24,11 @@ public sealed partial class PlantGrowthComponent : Component
     /// Amount of nutrients consumed per growth tick.
     /// </summary>
     [DataField, AutoNetworkedField]
-    public float NutrientConsumption = 0.75f;
+    public float NutrientConsumption = 0.75f;*/
+
+    /// <summary>
+    /// Base amount of nutrients required for and consumed at harvest.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2> BaseRequirements;
 }
