@@ -1,9 +1,25 @@
 using Robust.Shared.Prototypes;
 using Content.Shared._Persistence14.Botany;
+using Content.Shared.Botany.Components;
+using Content.Shared.Botany.Systems;
 using Content.Shared.EntityEffects;
 using Content.Shared.FixedPoint;
 
 namespace Content.Shared._Persistence14.EntityEffects.Botany;
+
+/// <summary>
+/// Entity effect that adjusts the nutrition of a plant.
+/// </summary>
+/// <inheritdoc cref="EntityEffectSystem{T,TEffect}"/>
+public sealed partial class PlantAdjustNutritionEntityEffectSystem : EntityEffectSystem<PlantTrayComponent, PlantAdjustNutrient>
+{
+    [Dependency] private PlantTraySystem _plantTray = default!;
+
+    protected override void Effect(Entity<PlantTrayComponent> entity, ref EntityEffectEvent<PlantAdjustNutrient> args)
+    {
+        _plantTray.AdjustNutrient(entity.AsNullable(), args.Effect.Amount, args.Effect.Nutrient);
+    }
+}
 
 /// <summary>
 /// A type of <see cref="EntityEffectBase{T}"/> which modifies the nutrient of a Seed in a PlantHolder.
