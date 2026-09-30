@@ -20,7 +20,7 @@ using Robust.Shared.Utility;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared.EntityEffects;
-using Content.Shared.EntityEffects.Effects.Botany;
+using Content.Shared._Persistence14.EntityEffects.Botany;
 
 namespace Content.Client.Guidebook.Controls;
 

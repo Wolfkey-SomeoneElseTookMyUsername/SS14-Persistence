@@ -1,8 +1,9 @@
 using Robust.Shared.Prototypes;
 using Content.Shared._Persistence14.Botany;
+using Content.Shared.EntityEffects;
 using Content.Shared.FixedPoint;
 
-namespace Content.Shared.EntityEffects.Effects.Botany;
+namespace Content.Shared._Persistence14.EntityEffects.Botany;
 
 /// <summary>
 /// A type of <see cref="EntityEffectBase{T}"/> which modifies the nutrient of a Seed in a PlantHolder.
