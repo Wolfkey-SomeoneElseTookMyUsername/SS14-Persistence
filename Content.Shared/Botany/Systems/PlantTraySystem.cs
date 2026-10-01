@@ -31,6 +31,7 @@ public sealed partial class PlantTraySystem : EntitySystem
 
     [Dependency] private EntityQuery<PlantDataComponent> _dataQuery = default!;
     [Dependency] private EntityQuery<PlantWeedPestComponent> _weedPestQuery = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!; // Persistence 14
 
     [SubscribeLocalEvent]
     private void OnExamine(Entity<PlantTrayComponent> ent, ref ExaminedEvent args)
@@ -50,10 +51,11 @@ public sealed partial class PlantTraySystem : EntitySystem
                 }
             }
 
-            args.PushMarkup(Loc.GetString("tray-component-water-level-message",
+            /*args.PushMarkup(Loc.GetString("tray-component-water-level-message",
                 ("waterLevel", (int)ent.Comp.WaterLevel)));
             args.PushMarkup(Loc.GetString("tray-component-nutrient-level-message",
-                ("nutritionLevel", (int)ent.Comp.NutritionLevel)));
+                ("nutritionLevel", (int)ent.Comp.NutritionLevel)));*/
+            args.PushMarkup(GetTrayNutrientsMarkup(ent.AsNullable())); // Persistence 14
 
             args.PushMarkup(GetTrayWarningsMarkup(ent.AsNullable()));
             if (plantUid != null && ent.Comp.DrawWarnings)
@@ -322,6 +324,29 @@ public sealed partial class PlantTraySystem : EntitySystem
 
         if (GetPestThreshold(ent))
             markup.Add(Loc.GetString("tray-component-pest-high-level-warning"));
+
+        return string.Join("\n", markup);
+    }
+
+    /// <summary>
+    /// Persistence: Gets the nutrients markup of the tray.
+    /// </summary>
+    [PublicAPI]
+    public string GetTrayNutrientsMarkup(Entity<PlantTrayComponent?> ent)
+    {
+        if (!Resolve(ent.Owner, ref ent.Comp, false))
+            return string.Empty;
+
+        var markup = new List<string>();
+
+        foreach (var (nutrientId, amount) in ent.Comp.Nutrients)
+        {
+            var nutrient = _prototypeManager.Index(nutrientId);
+            markup.Add(Loc.GetString("tray-component-nutrient-message",
+                ("name", nutrient.LocalizedName),
+                ("color", nutrient.SubstanceColor),
+                ("nutrientLevel", amount)));
+        }
 
         return string.Join("\n", markup);
     }
