@@ -125,8 +125,8 @@
   physicalDesc: reagent-physical-desc-robust
   plantMetabolism:
     - !type:PlantAdjustNutrient
-      amount: 0.05
-      nutrient: Nutrient
+      amount: 1
+      nutrient: Fertilizer
     - !type:PlantAdjustWeeds
       probability: 0.025
       amount: 1
