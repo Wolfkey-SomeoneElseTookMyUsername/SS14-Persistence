@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using Content.Shared._Persistence14.Botany;
 using Content.Shared.Botany.Components;
 using Content.Shared.Chemistry.EntitySystems;
-using Content.Shared.Chemistry.Reagent;
 using Content.Shared.EntityEffects;
 using Content.Shared.Examine;
 using Content.Shared.FixedPoint;
@@ -29,7 +28,9 @@ public sealed partial class PlantTraySystem : EntitySystem
     [Dependency] private SharedSolutionContainerSystem _solutionContainer = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
+    [Dependency] private EntityQuery<PlantTrayComponent> _trayQuery = default!;
     [Dependency] private EntityQuery<PlantDataComponent> _dataQuery = default!;
+    [Dependency] private EntityQuery<PlantHolderComponent> _holderQuery = default!;
     [Dependency] private EntityQuery<PlantWeedPestComponent> _weedPestQuery = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!; // Persistence 14
 
@@ -44,11 +45,11 @@ public sealed partial class PlantTraySystem : EntitySystem
             if (!TryGetPlant(ent.AsNullable(), out var plantUid))
             {
                 args.PushMarkup(Loc.GetString("tray-component-nothing-planted-message"));
-                if (_dataQuery.TryComp(plantUid, out var plantData))
-                {
-                    var name = Loc.GetString(plantData.Name);
-                    args.PushMarkup(Loc.GetString("plant-component-something-already-growing-message", ("seedName", name)));
-                }
+            }
+            else if (_dataQuery.TryComp(plantUid, out var plantData))
+            {
+                var name = Loc.GetString(plantData.Name);
+                args.PushMarkup(Loc.GetString("plant-component-something-already-growing-message", ("seedName", name)));
             }
 
             /*args.PushMarkup(Loc.GetString("tray-component-water-level-message",
@@ -58,8 +59,6 @@ public sealed partial class PlantTraySystem : EntitySystem
             args.PushMarkup(GetTrayNutrientsMarkup(ent.AsNullable())); // Persistence 14
 
             args.PushMarkup(GetTrayWarningsMarkup(ent.AsNullable()));
-            if (plantUid != null && ent.Comp.DrawWarnings)
-                args.PushMarkup(_plant.GetPlantWarningsMarkup(plantUid.Value));
         }
     }
 
@@ -67,6 +66,21 @@ public sealed partial class PlantTraySystem : EntitySystem
     private void OnSolutionTransferred(Entity<PlantTrayComponent> ent, ref SolutionTransferredEvent args)
     {
         _audio.PlayPredicted(ent.Comp.WateringSound, ent, args.User);
+    }
+
+    [SubscribeLocalEvent]
+    private void OnPlantTerminating(Entity<PlantComponent> ent, ref EntityTerminatingEvent args)
+    {
+        var trayUid = Transform(ent.Owner).ParentUid;
+
+        if (!_trayQuery.TryComp(trayUid, out var tray)
+            || tray.PlantEntity != ent.Owner)
+        {
+            return;
+        }
+
+        tray.PlantEntity = null;
+        DirtyField(trayUid, tray, nameof(tray.PlantEntity));
     }
 
     // Workaround for https://github.com/space-wizards/space-station-14/pull/35314
@@ -125,7 +139,7 @@ public sealed partial class PlantTraySystem : EntitySystem
 
         foreach (var entry in contents)
         {
-            var reagentProto = ProtoMan.Index<ReagentPrototype>(entry.Reagent.Prototype);
+            var reagentProto = ProtoMan.Index(entry.Reagent.Prototype);
             _entityEffects.ApplyEffects(trayUid, [.. reagentProto.PlantMetabolisms], entry.Quantity.Float());
             _entityEffects.ApplyEffects(plantUid.Value, [.. reagentProto.PlantMetabolisms], entry.Quantity.Float());
         }
@@ -259,6 +273,15 @@ public sealed partial class PlantTraySystem : EntitySystem
     }
 
     /// <summary>
+    /// Checks whether the tray contains a plant entity.
+    /// </summary>
+    [PublicAPI]
+    public bool HasPlant(Entity<PlantTrayComponent?> ent)
+    {
+        return TryGetPlant(ent, out _);
+    }
+
+    /// <summary>
     /// Tries to get the plant entity in the tray.
     /// </summary>
     [PublicAPI]
@@ -270,16 +293,16 @@ public sealed partial class PlantTraySystem : EntitySystem
 
         plant = ent.Comp.PlantEntity;
         if (plant == null || Deleted(plant))
-        {
-            ent.Comp.PlantEntity = null;
-            DirtyField(ent, nameof(ent.Comp.PlantEntity));
             return false;
-        }
 
         return true;
     }
 
-    public bool TryGetAlivePlant(Entity<PlantTrayComponent?> ent)
+    /// <summary>
+    /// Checks whether the tray contains a living plant entity.
+    /// </summary>
+    [PublicAPI]
+    public bool HasAlivePlant(Entity<PlantTrayComponent?> ent)
     {
         return TryGetAlivePlant(ent, out _);
     }
@@ -324,6 +347,22 @@ public sealed partial class PlantTraySystem : EntitySystem
 
         if (GetPestThreshold(ent))
             markup.Add(Loc.GetString("tray-component-pest-high-level-warning"));
+
+        if (ent.Comp.DrawWarnings && TryGetPlant(ent, out var plantUid)
+            && _holderQuery.TryComp(plantUid.Value, out var holder))
+        {
+            if (holder.ImproperHeat)
+                markup.Add(Loc.GetString("tray-component-plant-improper-heat-warning"));
+
+            if (holder.ImproperPressure)
+                markup.Add(Loc.GetString("tray-component-plant-improper-pressure-warning"));
+
+            if (holder.MissingGas)
+                markup.Add(Loc.GetString("tray-component-plant-missing-gas-warning"));
+
+            if (_plantHolder.GetHealthThreshold(plantUid.Value))
+                markup.Add(Loc.GetString("tray-component-plant-health-warning"));
+        }
 
         return string.Join("\n", markup);
     }
