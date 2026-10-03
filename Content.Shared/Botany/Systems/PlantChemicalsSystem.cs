@@ -1,9 +1,12 @@
+using Content.Shared._Persistence14.Botany;
 using JetBrains.Annotations;
+using Content.Shared._Persistence14.Botany;
 using Content.Shared.Botany.Components;
 using Content.Shared.Botany.Events;
 using Content.Shared.FixedPoint;
 using Content.Shared.Random;
 using Content.Shared.Random.Helpers;
+using Robust.Shared.Prototypes; // Persistence
 using Robust.Shared.Timing;
 
 namespace Content.Shared.Botany.Systems;
@@ -16,6 +19,7 @@ public sealed partial class PlantChemicalsSystem : EntitySystem
     [Dependency] private BotanySystem _botany = default!;
     [Dependency] private PlantMutationSystem _mutation = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!; // Persistence
 
     [SubscribeLocalEvent]
     private void OnCrossPollinate(Entity<PlantChemicalsComponent> ent, ref PlantCrossPollinateEvent args)
@@ -58,4 +62,49 @@ public sealed partial class PlantChemicalsSystem : EntitySystem
         ent.Comp.Chemicals[chemicalId] = seedChemQuantity;
         Dirty(ent);*/ // TODO: Re-implement this
     }
+
+    /// <summary>
+    /// Persistence: Returns the combined requirement for the specified nutrient of all the plant's chemicals. Does not include other sources of requirements.
+    /// </summary>
+    [PublicAPI]
+    public FixedPoint2 GetTotalRequirement(Entity<PlantChemicalsComponent?> ent, ProtoId<PlantNutrientPrototype> nutrientId)
+    {
+        var totalRequirement = FixedPoint2.Zero;
+        if (!Resolve(ent, ref ent.Comp, false))
+            return totalRequirement;
+
+        foreach (var quantity in ent.Comp.Chemicals.Values)
+        {
+            var quantityProto = _prototypeManager.Index(quantity.Id);
+            if (quantityProto.Requirements.TryGetValue(nutrientId, out var requirement))
+            {
+                totalRequirement += requirement.Requirement;
+            }
+        }
+
+        return totalRequirement;
+    }
+
+    /// <summary>
+    /// Persistence: Returns the combined bonus requirement for the specified nutrient of all the plant's chemicals.
+    /// </summary>
+    [PublicAPI]
+    public FixedPoint2 GetTotalBonusRequirement(Entity<PlantChemicalsComponent?> ent, ProtoId<PlantNutrientPrototype> nutrientId)
+    {
+        var totalRequirement = FixedPoint2.Zero;
+        if (!Resolve(ent, ref ent.Comp, false))
+            return totalRequirement;
+
+        foreach (var quantity in ent.Comp.Chemicals.Values)
+        {
+            var quantityProto = _prototypeManager.Index(quantity.Id);
+            if (quantityProto.Requirements.TryGetValue(nutrientId, out var requirement))
+            {
+                totalRequirement += requirement.BonusRequirement;
+            }
+        }
+
+        return totalRequirement;
+    }
+
 }
