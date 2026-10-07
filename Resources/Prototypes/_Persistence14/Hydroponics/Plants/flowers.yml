@@ -118,3 +118,6 @@
         id: Razorium
       Desoxyephedrine: # meff!!
         id: GlassthleDesoxyephedrine
+  - type: PlantBaseRequirements
+    baseRequirements:
+      Carbon: 5

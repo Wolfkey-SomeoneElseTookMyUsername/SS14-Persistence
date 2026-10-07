@@ -17,7 +17,10 @@
     production: 3
     yield: 5
     growthStages: 3
-  - type: PlantGrowth # TODO: requirements
+  - type: PlantBaseRequirements
+    baseRequirements:
+      Nutrient: 10
+      Water: 10
   - type: PlantAtmospheric
     lowHeatTolerance: 288 # 15°C
     highHeatTolerance: 308 # 35°C
@@ -41,7 +44,11 @@
     production: 3
     yield: 3
     growthStages: 3
-  - type: PlantGrowth # TODO: Requirements
+  - type: PlantBaseRequirements
+    baseRequirements:
+      Nutrient: 5
+      Aluminum: 5 # Thermite or something
+      Carbon: 1
   - type: PlantAtmospheric
     lowHeatTolerance: 288 # 15°C
     highHeatTolerance: 308 # 35°C
