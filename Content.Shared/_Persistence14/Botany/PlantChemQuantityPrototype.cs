@@ -28,11 +28,6 @@ public sealed partial class PlantChemQuantityPrototype : IPrototype
 public partial struct NutrientRequirement
 {
     /// <summary>
-    /// The nutrient required by this nutrient requirement
-    /// </summary>
-    [DataField] public ProtoId<PlantNutrientPrototype> Nutrient;
-
-    /// <summary>
     /// Minimum amount of nutrient required for a plant with this requirement to grow.
     /// </summary>
     [DataField] public FixedPoint2 Requirement = FixedPoint2.Zero;
