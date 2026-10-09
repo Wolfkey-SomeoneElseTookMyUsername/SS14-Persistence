@@ -1,6 +1,6 @@
-using Content.Shared._Persistence14.Botany;
 using JetBrains.Annotations;
 using Content.Shared._Persistence14.Botany;
+using Content.Shared._Persistence14.Botany.Components;
 using Content.Shared.Botany.Components;
 using Content.Shared.Botany.Events;
 using Content.Shared.FixedPoint;
@@ -20,6 +20,8 @@ public sealed partial class PlantChemicalsSystem : EntitySystem
     [Dependency] private PlantMutationSystem _mutation = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!; // Persistence
+
+    [Dependency] private EntityQuery<PlantBaseRequirementsComponent> _requirementsQuery = default!; // Persistence
 
     [SubscribeLocalEvent]
     private void OnCrossPollinate(Entity<PlantChemicalsComponent> ent, ref PlantCrossPollinateEvent args)
@@ -64,7 +66,7 @@ public sealed partial class PlantChemicalsSystem : EntitySystem
     }
 
     /// <summary>
-    /// Persistence: Returns the combined requirement for the specified nutrient of all the plant's chemicals. Does not include other sources of requirements.
+    /// Persistence: Returns the total requirement for the specified nutrient.
     /// </summary>
     [PublicAPI]
     public FixedPoint2 GetTotalRequirement(Entity<PlantChemicalsComponent?> ent, ProtoId<PlantNutrientPrototype> nutrientId)
@@ -80,6 +82,14 @@ public sealed partial class PlantChemicalsSystem : EntitySystem
             {
                 totalRequirement += requirement.Requirement;
             }
+        }
+
+        if (!_requirementsQuery.TryComp(ent, out var baseRequirementComp))
+            return totalRequirement;
+
+        if (baseRequirementComp.BaseRequirements.TryGetValue(nutrientId, out var baseRequirement))
+        {
+            totalRequirement += baseRequirement;
         }
 
         return totalRequirement;
