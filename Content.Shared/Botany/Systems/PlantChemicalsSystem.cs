@@ -8,6 +8,7 @@ using Content.Shared.Random;
 using Content.Shared.Random.Helpers;
 using Robust.Shared.Prototypes; // Persistence
 using Robust.Shared.Timing;
+using Robust.Shared.Utility;
 
 namespace Content.Shared.Botany.Systems;
 
@@ -63,6 +64,48 @@ public sealed partial class PlantChemicalsSystem : EntitySystem
         seedChemQuantity.PotencyDivisor = (float)potencyDivisor;
         ent.Comp.Chemicals[chemicalId] = seedChemQuantity;
         Dirty(ent);*/ // TODO: Re-implement this
+    }
+
+    /// <summary>
+    /// Persistence: Returns the total requirements for all nutrients.
+    /// </summary>
+    [PublicAPI]
+    public Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> GetAllRequirements(Entity<PlantChemicalsComponent?> ent)
+    {
+        Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> totalRequirement = new();
+
+        if (_requirementsQuery.TryComp(ent, out var baseRequirementComp))
+        {
+            foreach (var (nutrient, baseRequirement) in baseRequirementComp.BaseRequirements)
+            {
+                NutrientRequirement requirement = new()
+                {
+                    Requirement = baseRequirement,
+                };
+                totalRequirement.Add(nutrient, requirement);
+            }
+        }
+
+        if (!Resolve(ent, ref ent.Comp, false))
+            return totalRequirement;
+
+        foreach (var chemQuantity in ent.Comp.Chemicals.Values)
+        {
+            var quantityProto = _prototypeManager.Index(chemQuantity.Id);
+            foreach (var (nutrient, requirement) in quantityProto.Requirements)
+            {
+                if (!totalRequirement.TryAdd(nutrient, requirement))
+                {
+                    var newRequirement = totalRequirement[nutrient];
+                    newRequirement.Requirement += requirement.Requirement;
+                    newRequirement.BonusRequirement += requirement.BonusRequirement;
+                    newRequirement.BonusAmount += requirement.BonusAmount;
+                    totalRequirement[nutrient] = newRequirement;
+                }
+            }
+        }
+
+        return totalRequirement;
     }
 
     /// <summary>
