@@ -78,7 +78,7 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment5
+        id: BasicNutriment5
 
 - type: entity
   parent: BasePlant
@@ -128,4 +128,4 @@
       Amatoxin:
         id: Amatoxin
       Nutriment: ## yumby :)
-        id: BaseNutriment5
+        id: BasicNutriment5

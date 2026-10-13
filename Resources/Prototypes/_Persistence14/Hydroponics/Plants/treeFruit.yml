@@ -211,7 +211,7 @@
       Nutriment:
         id: BasicNutriment6
       Water:
-        id: BaseWater4
+        id: BasicWater4
       Vitamin:
         id: BasicVitamin2
 
@@ -237,9 +237,9 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment10
+        id: BasicNutriment10
       Vitamin:
-        id: BaseVitamin4
+        id: BasicVitamin4
 
 - type: entity
   parent: BasePlant
@@ -263,9 +263,9 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment10
+        id: BasicNutriment10
       Vitamin:
-        id: BaseVitamin4
+        id: BasicVitamin4
       Gold:
         id: AlchemyGold
 
@@ -290,7 +290,7 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment5
+        id: BasicNutriment5
       Sulfur:
         id: Sulfur
 
@@ -314,7 +314,7 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment5
+        id: BasicNutriment5
       Sulfur:
         id: Sulfur
 
@@ -338,7 +338,7 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment5
+        id: BasicNutriment5
       Sulfur:
         id: Sulfur
 
@@ -362,9 +362,9 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment5
+        id: BasicNutriment5
       Vitamin:
-        id: BaseVitamin4
+        id: BasicVitamin4
 
 - type: entity
   parent: BasePlant
@@ -390,9 +390,9 @@
   - type: PlantChemicals
     chemicals:
       Vitamin:
-        id: BaseVitamin4
+        id: BasicVitamin4
       Nutriment:
-        id: BaseNutriment2
+        id: BasicNutriment2
 
 - type: entity
   parent: BasePlant
@@ -448,6 +448,6 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment3
+        id: BasicNutriment3
       Vitamin:
-        id: BaseVitamin3
+        id: BasicVitamin3

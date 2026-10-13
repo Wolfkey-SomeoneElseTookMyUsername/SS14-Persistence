@@ -28,9 +28,9 @@
       Nutriment:
         id: BasicNutriment7
       Vitamin:
-        id: BaseVitamin3
+        id: BasicVitamin3
       Water:
-        id: BaseWater4
+        id: BasicWater4
 
 - type: entity
   parent: BasePlant
@@ -63,7 +63,7 @@
       SpaceLube:
         id: BlueTomatoLube
       Vitamin:
-        id: BaseVitamin4
+        id: BasicVitamin4
 
 - type: entity
   parent: BasePlant
@@ -95,7 +95,7 @@
       Blood:
         id: TomatoBlood
       Vitamin:
-        id: BaseVitamin4
+        id: BasicVitamin4
 
 - type: entity
   parent: BasePlant
@@ -155,9 +155,9 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment10
+        id: BasicNutriment10
       Vitamin:
-        id: BaseVitamin4
+        id: BasicVitamin4
 
 - type: entity
   parent: BasePlant
@@ -241,11 +241,11 @@
     yield: 1
   - type: PlantChemicals
     Nutriment:
-      id: BaseNutriment10
+      id: BasicNutriment10
     Water:
       id: MelonWater
     Vitamin:
-      id: BaseVitamin5
+      id: BasicVitamin5
 
 - type: entity
   parent: BasePlant
@@ -266,11 +266,11 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment10
+        id: BasicNutriment10
       Holywater:
         id: HolyMelonWater
       Vitamin:
-        id: BaseVitamin5
+        id: BasicVitamin5
 
 - type: entity
   parent: BasePlant
@@ -323,7 +323,7 @@
       PumpkinFlesh:
         id: PumpkinFlesh
       Vitamin:
-        id: BaseVitamin5
+        id: BasicVitamin5
 
 - type: entity
   parent: BasePlant
@@ -380,6 +380,6 @@
       Artifexium:
         id: Artifexium
       Nutriment:
-        id: BaseNutriment2
+        id: BasicNutriment2
       Vitamin:
-        id: BaseVitamin2
+        id: BasicVitamin2

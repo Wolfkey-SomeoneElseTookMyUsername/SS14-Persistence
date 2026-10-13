@@ -19,7 +19,7 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment2
+        id: BasicNutriment2
       Bicaridine:
         id: Bicaridine20
 
@@ -44,7 +44,7 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment2
+        id: BasicNutriment2
       Bicaridine:
         id: Bicaridine20
 
@@ -68,7 +68,7 @@
   - type: PlantChemicals
     chemicals:
       Nutriment:
-        id: BaseNutriment3
+        id: BasicNutriment3
       PolypyryliumOligomers:
         id: PolypyryliumOligomers
 

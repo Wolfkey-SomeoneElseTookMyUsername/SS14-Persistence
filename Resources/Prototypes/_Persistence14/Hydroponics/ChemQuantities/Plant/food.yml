@@ -243,7 +243,7 @@
       bonusAmount: 3
 
 - type: plantChemQuantity
-  id: BaseWater4
+  id: BasicWater4
   baseAmount: 1
   requirements:
     Water:
