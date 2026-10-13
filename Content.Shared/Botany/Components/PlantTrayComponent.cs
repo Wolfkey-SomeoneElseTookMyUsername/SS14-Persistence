@@ -34,6 +34,9 @@ public sealed partial class PlantTrayComponent : Component
     [DataField, AutoNetworkedField]
     public float MaxNutritionLevel = 100f;
 
+    /// <summary>
+    /// Persistence: Types and amounts of nutrients available to the plant.
+    /// </summary>
     [DataField, AutoNetworkedField]
     public Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2> Nutrients = new();
 

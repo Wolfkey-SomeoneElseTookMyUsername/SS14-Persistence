@@ -23,6 +23,7 @@ public sealed partial class PlantHarvestSystem : EntitySystem
     [Dependency] private EntityQuery<PlantHarvestComponent> _harvestQuery = default!;
     [Dependency] private EntityQuery<PlantComponent> _plantQuery = default!;
     [Dependency] private EntityQuery<PlantDataComponent> _dataQuery = default!;
+    [Dependency] private EntityQuery<PlantTrayComponent> _trayQuery = default!; // Persistence
 
     [SubscribeLocalEvent]
     private void OnPlantGrow(Entity<PlantHolderComponent> ent, ref PlantGrowEvent args)
@@ -115,6 +116,9 @@ public sealed partial class PlantHarvestSystem : EntitySystem
             || !_harvestQuery.TryComp(ent.Owner, out var harvest))
             return;
 
+        if (!_plant.TryGetTray((ent.Owner, plant), out var tray)) // Persistence
+            return;
+
         if (!ent.Comp.ReadyForHarvest || plantData.ProductPrototypes.Count == 0 || plant.Yield == 0)
             return;
 
@@ -129,7 +133,7 @@ public sealed partial class PlantHarvestSystem : EntitySystem
         }
 
         var position = Transform(user).Coordinates;
-        _botany.SpawnProduce(ent.Owner, position, totalYield);
+        _botany.SpawnProduce(ent.Owner, position, totalYield, tray.Comp.Nutrients); // Persistence: Provide tray nutrients
 
         ent.Comp.ReadyForHarvest = false;
         ent.Comp.LastHarvest = ent.Comp.Age;

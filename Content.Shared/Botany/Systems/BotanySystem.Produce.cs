@@ -37,7 +37,7 @@ public sealed partial class BotanySystem
         }
     }
 
-    private void ProduceGrown(Entity<ProduceComponent> ent)
+    private void ProduceGrown(Entity<ProduceComponent> ent, Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2> nutrients, int yield) // Persistence: Plant nutrient rework
     {
         if (!TryGetPlantComponent<PlantComponent>(ent.Comp.PlantData, ent.Comp.PlantProtoId, out var plant)
             || !TryGetPlantComponent<PlantChemicalsComponent>(ent.Comp.PlantData, ent.Comp.PlantProtoId, out var chems))
@@ -52,10 +52,22 @@ public sealed partial class BotanySystem
         _solutionContainer.EnsureSolution(ent.Owner, ent.Comp.TargetSolution, out var solution);
         solution.Comp.Solution.RemoveAllSolution();
 
-        foreach (var (chem, quantity) in chems.Chemicals)
+        TryGetPlantRequirements(ent.Comp.PlantData, ent.Comp.PlantProtoId, out var requirements); // Persistence
+
+        foreach (var (chem, quantity) in chems.Chemicals) // Persistence: Heavily modified this loop for the plant nutrient rework.
         {
             var quantityProto = _prototypeManager.Index(quantity.Id);
-            var amount = quantityProto.BaseAmount; // TODO: Properly implement this
+            var amount = quantityProto.BaseAmount;
+            foreach (var (nutrient, requirement) in quantityProto.Requirements)
+            {
+                var bonusNutrient = nutrients.GetValueOrDefault(nutrient) - requirements.GetValueOrDefault(nutrient).Requirement * yield;
+                var bonusMultiplier = FixedPoint2.Zero;
+                if (requirements[nutrient].BonusRequirement != FixedPoint2.Zero) // TryGetPlantRequirements gets all the requirements in PlantChemicalsComponent, so this should never cause issues.
+                {
+                    bonusMultiplier = FixedPoint2.Clamp(bonusNutrient / (requirements[nutrient].BonusRequirement * yield), FixedPoint2.Zero, 1);
+                }
+                amount += requirement.BonusAmount * bonusMultiplier;
+            }
             solution.Comp.Solution.MaxVolume += amount;
             solution.Comp.Solution.AddReagent(chem, amount);
         }
@@ -68,7 +80,8 @@ public sealed partial class BotanySystem
     public void SpawnProduce(
         Entity<PlantComponent?, PlantDataComponent?> ent,
         EntityCoordinates position,
-        int amount)
+        int amount,
+        Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2> nutrients) // Persistence: Plant nutrient rework
     {
         if (!Resolve(ent, ref ent.Comp1, ref ent.Comp2, false))
             return;
@@ -84,7 +97,7 @@ public sealed partial class BotanySystem
             produce.PlantProtoId = MetaData(ent.Owner).EntityPrototype!.ID;
             produce.PlantData = ClonePlantSnapshotData(ent.Owner, parent: entity);
             Dirty(entity, produce);
-            ProduceGrown((entity, produce));
+            ProduceGrown((entity, produce), nutrients, amount); // Persistence: Plant nutrient rework
             _appearance.SetData(entity, ProduceVisuals.Potency, ent.Comp1.Potency);
         }
     }
