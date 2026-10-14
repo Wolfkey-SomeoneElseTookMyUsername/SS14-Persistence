@@ -98,7 +98,7 @@ public sealed partial class BotanySystem
             produce.PlantData = ClonePlantSnapshotData(ent.Owner, parent: entity);
             Dirty(entity, produce);
             ProduceGrown((entity, produce), nutrients, amount); // Persistence: Plant nutrient rework
-            _appearance.SetData(entity, ProduceVisuals.Potency, ent.Comp1.Potency);
+            //_appearance.SetData(entity, ProduceVisuals.Potency, ent.Comp1.Potency); // Persistence TODO: Make this not use potency
         }
     }
 }

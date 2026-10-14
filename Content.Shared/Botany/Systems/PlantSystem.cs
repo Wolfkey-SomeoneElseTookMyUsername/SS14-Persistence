@@ -77,7 +77,7 @@ public sealed partial class PlantSystem : EntitySystem
         _mutation.CrossFloat(ref ent.Comp.Lifespan, pollenData.Lifespan);
         _mutation.CrossFloat(ref ent.Comp.Maturation, pollenData.Maturation);
         _mutation.CrossFloat(ref ent.Comp.Production, pollenData.Production);
-        _mutation.CrossFloat(ref ent.Comp.Potency, pollenData.Potency);
+        //_mutation.CrossFloat(ref ent.Comp.Potency, pollenData.Potency); // Persistence: Remove potency
         _mutation.CrossTrait(ent.Owner, args.PollenData);
         Dirty(ent);
     }
@@ -204,15 +204,15 @@ public sealed partial class PlantSystem : EntitySystem
     /// <summary>
     /// Adjusts the potency of a plant component.
     /// </summary>
-    [PublicAPI]
-    public void AdjustPotency(Entity<PlantComponent?> ent, float amount)
-    {
-        if (!Resolve(ent.Owner, ref ent.Comp, false))
-            return;
-
-        ent.Comp.Potency = Math.Max(0, ent.Comp.Potency + amount);
-        DirtyField(ent, nameof(ent.Comp.Potency));
-    }
+    // [PublicAPI]
+    // public void AdjustPotency(Entity<PlantComponent?> ent, float amount)
+    // {
+    //     if (!Resolve(ent.Owner, ref ent.Comp, false))
+    //         return;
+    //
+    //     ent.Comp.Potency = Math.Max(0, ent.Comp.Potency + amount);
+    //     DirtyField(ent, nameof(ent.Comp.Potency));
+    // }
 
     /// <summary>
     /// Adjusts the lifespan of a plant component.
@@ -447,7 +447,7 @@ public sealed partial class PlantSystem : EntitySystem
 
         var markup = new List<string>();
         markup.Add(Loc.GetString("seed-component-plant-yield-text", ("seedYield", component.Yield)));
-        markup.Add(Loc.GetString("seed-component-plant-potency-text", ("seedPotency", component.Potency)));
+        //markup.Add(Loc.GetString("seed-component-plant-potency-text", ("seedPotency", component.Potency))); // Persistence: Remove potency
 
         return string.Join("\n", markup);
     }

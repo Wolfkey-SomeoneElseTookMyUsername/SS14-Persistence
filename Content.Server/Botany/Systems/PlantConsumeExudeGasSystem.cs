@@ -50,7 +50,7 @@ public sealed partial class PlantConsumeExudeGasSystem : SharedPlantConsumeExude
             foreach (var (gas, amount) in ent.Comp.ExudeGasses)
             {
                 environment.AdjustMoles(gas,
-                    MathF.Max(1f, MathF.Round(amount * MathF.Round(plant.Potency) / exudeCount)));
+                    MathF.Max(1f, MathF.Round(amount * MathF.Round(50) / exudeCount))); // Persistence: Remove potency, placeholder value of 50 used. TODO: Make gasses use nutrient requirements.
             }
         }
 

@@ -86,7 +86,7 @@ public sealed partial class PlantAnalyzerWindow : FancyWindow
         Lifespan.Text = $"{plant.Lifespan:0.#}";
         Maturation.Text = $"{plant.Maturation:0.#}";
         Production.Text = $"{plant.Production:0.#}";
-        Potency.Text = $"{plant.Potency:0.#}";
+        //Potency.Text = $"{plant.Potency:0.#}"; // Persistence: Remove potency
         Mutation.Text = $"{holder.MutationLevel:0.#} / {holder.MaxMutationLevel:0.#}";
         MutationMod.Text = $"{holder.MutationMod:0.#} / {holder.MaxMutationMod:0.#}";
         Age.Text = $"{holder.Age}";
@@ -104,7 +104,7 @@ public sealed partial class PlantAnalyzerWindow : FancyWindow
         UpdateDelta(LifespanDelta, plant.Lifespan, prototypePlant.Lifespan);
         UpdateDelta(MaturationDelta, plant.Maturation, prototypePlant.Maturation, invert: true);
         UpdateDelta(ProductionDelta, plant.Production, prototypePlant.Production);
-        UpdateDelta(PotencyDelta, plant.Potency, prototypePlant.Potency);
+        //UpdateDelta(PotencyDelta, plant.Potency, prototypePlant.Potency); // Persistence: Remove potency
     }
 
     private void UpdateDelta(Label label, float value, float prototypeValue, bool invert = false)
