@@ -112,7 +112,10 @@ public sealed partial class PlantSystem : EntitySystem
 
             if (_chemQuery.TryGetComponent(ent.Owner, out var chemicals)) // Persistence: Plant nutrient rework
             {
-                foreach (var (nutrientId, requirement) in _plantChemicals.GetAllRequirements((ent.Owner, chemicals)))
+                var requirements = _plantChemicals.GetAllRequirements((ent.Owner, chemicals));
+                if (requirements.Count > 0)
+                    args.PushMarkup(Loc.GetString("plant-component-has-requirements-message"));
+                foreach (var (nutrientId, requirement) in requirements)
                 {
                     var nutrient = _prototypeManager.Index(nutrientId);
                     var markup = Loc.GetString("plant-component-nutrient-requirement-message",
