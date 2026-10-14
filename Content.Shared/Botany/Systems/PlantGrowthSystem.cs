@@ -62,7 +62,7 @@ public sealed partial class PlantGrowthSystem : EntitySystem
         //     _plantTray.AdjustNutrient((trayUid, trayComp), -MathF.Max(0f, plantComp.NutrientConsumption * trayComp.TrayConsumptionMultiplier));
 
         var healthMod = random.Next(1, 3);
-        if (holder.SkipAging < 10)
+        /*if (holder.SkipAging < 10) Persistence: Plant nutrient rework
         {
             // Make sure the plant is not thirsty.
             if (trayComp.WaterLevel > 10)
@@ -82,7 +82,7 @@ public sealed partial class PlantGrowthSystem : EntitySystem
                 _plantHarvest.AffectGrowth(plantUid, -1);
                 _plantHolder.AdjustsHealth((plantUid, holder), -healthMod);
             }
-        }
+        }*/
     }
 
     /// <summary>
