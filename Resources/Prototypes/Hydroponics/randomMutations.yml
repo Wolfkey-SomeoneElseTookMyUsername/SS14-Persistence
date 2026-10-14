@@ -61,58 +61,58 @@
 #          amount: 2
 #        down: !type:PlantAdjustToxinsTolerance
 #          amount: -2
-    - name: ChangeLowPressureTolerance
-      baseOdds: 0.018
-      persists: false
-      effect: !type:PlantChangeStat
-        targetComponent: PlantAtmospheric
-        targetDataField: LowPressureTolerance
-        applyRange:
-          min: 60
-          max: 100
-        up: !type:PlantAdjustLowPressureTolerance
-          amount: 10
-        down: !type:PlantAdjustLowPressureTolerance
-          amount: -10
-    - name: ChangeHighPressureTolerance
-      baseOdds: 0.018
-      persists: false
-      effect: !type:PlantChangeStat
-        targetComponent: PlantAtmospheric
-        targetDataField: HighPressureTolerance
-        applyRange:
-          min: 100
-          max: 140
-        up: !type:PlantAdjustHighPressureTolerance
-          amount: 10
-        down: !type:PlantAdjustHighPressureTolerance
-          amount: -10
-    - name: ChangeLowHeatTolerance
-      baseOdds: 0.018
-      persists: false
-      effect: !type:PlantChangeStat
-        targetComponent: PlantAtmospheric
-        targetDataField: LowHeatTolerance
-        applyRange:
-          min: 2
-          max: 25
-        up: !type:PlantAdjustLowHeatTolerance
-          amount: 5
-        down: !type:PlantAdjustLowHeatTolerance
-          amount: -5
-    - name: ChangeHighHeatTolerance
-      baseOdds: 0.018
-      persists: false
-      effect: !type:PlantChangeStat
-        targetComponent: PlantAtmospheric
-        targetDataField: HighHeatTolerance
-        applyRange:
-          min: 2
-          max: 25
-        up: !type:PlantAdjustHighHeatTolerance
-          amount: 5
-        down: !type:PlantAdjustHighHeatTolerance
-          amount: -5
+#    - name: ChangeLowPressureTolerance Persistence: Remove heat and pressure mutations, due to them locking the tolerances to an incredibly small range.
+#      baseOdds: 0.018
+#      persists: false
+#      effect: !type:PlantChangeStat
+#        targetComponent: PlantAtmospheric
+#        targetDataField: LowPressureTolerance
+#        applyRange:
+#          min: 60
+#          max: 100
+#        up: !type:PlantAdjustLowPressureTolerance
+#          amount: 10
+#        down: !type:PlantAdjustLowPressureTolerance
+#          amount: -10
+#    - name: ChangeHighPressureTolerance
+#      baseOdds: 0.018
+#      persists: false
+#      effect: !type:PlantChangeStat
+#        targetComponent: PlantAtmospheric
+#        targetDataField: HighPressureTolerance
+#        applyRange:
+#          min: 100
+#          max: 140
+#        up: !type:PlantAdjustHighPressureTolerance
+#          amount: 10
+#        down: !type:PlantAdjustHighPressureTolerance
+#          amount: -10
+#    - name: ChangeLowHeatTolerance
+#      baseOdds: 0.018
+#      persists: false
+#      effect: !type:PlantChangeStat
+#        targetComponent: PlantAtmospheric
+#        targetDataField: LowHeatTolerance
+#        applyRange:
+#          min: 2
+#          max: 25
+#        up: !type:PlantAdjustLowHeatTolerance
+#          amount: 5
+#        down: !type:PlantAdjustLowHeatTolerance
+#          amount: -5
+#    - name: ChangeHighHeatTolerance
+#      baseOdds: 0.018
+#      persists: false
+#      effect: !type:PlantChangeStat
+#        targetComponent: PlantAtmospheric
+#        targetDataField: HighHeatTolerance
+#        applyRange:
+#          min: 2
+#          max: 25
+#        up: !type:PlantAdjustHighHeatTolerance
+#          amount: 5
+#        down: !type:PlantAdjustHighHeatTolerance
+#          amount: -5
 #    - name: ChangePestTolerance # Persistence: Plant nutrient rework
 #      baseOdds: 0.018
 #      persists: false
