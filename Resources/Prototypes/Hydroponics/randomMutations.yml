@@ -61,7 +61,7 @@
 #          amount: 2
 #        down: !type:PlantAdjustToxinsTolerance
 #          amount: -2
-#    - name: ChangeLowPressureTolerance Persistence: Remove heat and pressure mutations, due to them locking the tolerances to an incredibly small range.
+#    - name: ChangeLowPressureTolerance # Persistence: Remove heat and pressure mutations, due to them locking the tolerances to an incredibly small range.
 #      baseOdds: 0.018
 #      persists: false
 #      effect: !type:PlantChangeStat
