@@ -1,3 +1,4 @@
+/* Persistence: Replaced with PlantAdjustNutrientEntityEffect in _Persistence14 content folder
 using Content.Shared.Botany.Components;
 using Content.Shared.Botany.Systems;
 
@@ -13,7 +14,7 @@ public sealed partial class PlantAdjustNutritionEntityEffectSystem : EntityEffec
 
     protected override void Effect(Entity<PlantTrayComponent> entity, ref EntityEffectEvent<PlantAdjustNutrition> args)
     {
-        //_plantTray.AdjustNutrient(entity.AsNullable(), args.Effect.Amount); Persistence TODO: Fully remove or comment out this file
+        _plantTray.AdjustNutrient(entity.AsNullable(), args.Effect.Amount);
     }
 }
 
@@ -22,3 +23,4 @@ public sealed partial class PlantAdjustNutrition : BasePlantAdjustAttribute<Plan
 {
     public override string GuidebookAttributeName { get; set; } = "plant-attribute-nutrition";
 }
+*/
