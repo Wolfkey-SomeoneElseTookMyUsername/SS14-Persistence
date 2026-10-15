@@ -50,8 +50,9 @@
       Aluminum: 5 # Thermite or something
       Carbon: 1
   - type: PlantAtmospheric
-    lowHeatTolerance: 288 # 15°C
-    highHeatTolerance: 308 # 35°C
+    lowHeatTolerance: 253 # ~-20°C
+    highHeatTolerance: 573 # ~300°C
+    heatToleranceDamage: 0.5 # 1/4 the usual amount.
   - type: PlantTraitLigneous
 
 - type: entity
