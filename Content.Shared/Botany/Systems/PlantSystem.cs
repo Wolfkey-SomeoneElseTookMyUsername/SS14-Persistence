@@ -201,9 +201,9 @@ public sealed partial class PlantSystem : EntitySystem
         return true;
     }
 
-    /// <summary>
-    /// Adjusts the potency of a plant component.
-    /// </summary>
+    // <summary> // Persistence: Remove potency
+    // Adjusts the potency of a plant component.
+    // </summary>
     // [PublicAPI]
     // public void AdjustPotency(Entity<PlantComponent?> ent, float amount)
     // {
