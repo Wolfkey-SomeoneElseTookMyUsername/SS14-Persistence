@@ -23,7 +23,7 @@ public sealed partial class PlantSystem : EntitySystem
     [Dependency] private IPrototypeManager _prototypeManager = default!; // Persistence
 
     [Dependency] private EntityQuery<PlantHolderComponent> _holderQuery = default!;
-    [Dependency] private EntityQuery<PlantToxinsComponent> _toxinsQuery = default!;
+    //[Dependency] private EntityQuery<PlantToxinsComponent> _toxinsQuery = default!; Persistence 14: Replaced toxins as part of the plant nutrient rework.
     [Dependency] private EntityQuery<PlantWeedPestComponent> _weedPestQuery = default!;
     [Dependency] private EntityQuery<PlantTrayComponent> _trayQuery = default!;
     [Dependency] private EntityQuery<PlantChemicalsComponent> _chemQuery = default!; // Persistence
@@ -379,11 +379,11 @@ public sealed partial class PlantSystem : EntitySystem
 
         if (TryGetTray(ent.Owner, out var tray))
         {
-            if (_toxinsQuery.TryComp(ent.Owner, out var toxins)
+            /*if (_toxinsQuery.TryComp(ent.Owner, out var toxins) Persistence 14: Replaced toxins as part of the plant nutrient rework.
                 && tray.Comp.ToxinLevel > toxins.ToxinsTolerance)
             {
                 markup.Add(Loc.GetString("plant-component-toxins-high-warning"));
-            }
+            }*/
 
             if (_weedPestQuery.TryComp(ent.Owner, out var weedPest))
             {

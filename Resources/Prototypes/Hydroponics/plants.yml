@@ -36,7 +36,7 @@
   - type: PlantHolder
   - type: PlantHarvest
   - type: PlantChemicals
-  - type: PlantToxins
+#  - type: PlantToxins # Persistence: Made obsolete by plant nutrient rework
   - type: PlantVisuals
   - type: PlantWeedPest
   - type: PlantAtmospheric
