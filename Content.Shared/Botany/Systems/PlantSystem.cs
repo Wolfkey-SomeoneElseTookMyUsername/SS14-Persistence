@@ -390,8 +390,8 @@ public sealed partial class PlantSystem : EntitySystem
                 if (tray.Comp.WeedLevel > weedPest.WeedTolerance)
                     markup.Add(Loc.GetString("plant-component-weeds-high-warning"));
 
-                if (tray.Comp.PestLevel > weedPest.PestTolerance)
-                    markup.Add(Loc.GetString("plant-component-pests-high-warning"));
+                /*if (tray.Comp.PestLevel > weedPest.PestTolerance)  // Persistence: Replace pests as part of nutrient system rework
+                    markup.Add(Loc.GetString("plant-component-pests-high-warning"));*/
             }
         }
 
