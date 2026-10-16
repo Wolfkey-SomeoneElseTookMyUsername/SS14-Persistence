@@ -420,10 +420,11 @@ public sealed partial class PlantTraySystem : EntitySystem
     [PublicAPI]
     public bool GetWaterThreshold(Entity<PlantTrayComponent?> ent)
     {
-        if (!Resolve(ent.Owner, ref ent.Comp, false))
+        return false; // Persistence TODO: Figure out what to do with the water warning light
+        /*if (!Resolve(ent.Owner, ref ent.Comp, false))
             return false;
 
-        return ent.Comp.WaterLevel <= ent.Comp.MaxWaterLevel * 0.1f;
+        return ent.Comp.WaterLevel <= ent.Comp.MaxWaterLevel * 0.1f;*/
     }
 
     /// <summary>
