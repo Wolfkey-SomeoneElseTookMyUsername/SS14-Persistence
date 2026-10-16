@@ -76,7 +76,7 @@
     name: seeds-bloodtomato-name
     packetPrototype: BloodTomatoSeeds
     productPrototypes: [ FoodBloodTomato ]
-    mutationPrototypes: [ KillerTomatoPlants ]
+    # mutationPrototypes: [ KillerTomatoPlants ]
   - type: Plant
     lifespan: 60
     maturation: 8
