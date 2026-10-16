@@ -1,6 +1,7 @@
 using Content.Shared._Persistence14.Botany.Components;
 using Content.Shared.Botany.Components;
 using Content.Shared.Botany.Systems;
+using Content.Shared.FixedPoint;
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;
 
@@ -15,7 +16,7 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     [Dependency] private EntityQuery<PlantChemicalsComponent> _chemQuery = default!;
 
     /// <summary>
-    /// Returns the total requirements for all nutrients.
+    /// Returns the total requirements for all nutrients in the plant.
     /// </summary>
     [PublicAPI]
     public Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> GetAllRequirements(Entity<PlantComponent?> ent)
@@ -64,4 +65,49 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
         }
         return totalRequirement;
     }
+
+    /// <summary>
+    /// Returns true if all the non-bonus requirements of the plant are fulfilled.
+    /// </summary>
+    [PublicAPI]
+    public bool RequirementsFulfilled(Entity<PlantComponent?> ent)
+    {
+        if (!_plant.TryGetTray(ent, out var tray))
+            return false;
+
+        return RequirementsFulfilled(ent, tray);
+    }
+
+    /// <summary>
+    /// Returns true if all the non-bonus requirements of the plant are fulfilled by the nutrients in the tray.
+    /// </summary>
+    [PublicAPI]
+    public bool RequirementsFulfilled(Entity<PlantComponent?> ent, Entity<PlantTrayComponent> tray)
+    {
+
+        var requirements = GetAllRequirements(ent);
+        var nutrients = tray.Comp.Nutrients;
+
+        return RequirementsFulfilled(requirements, nutrients);
+    }
+
+    /// <summary>
+    /// Returns true if all the non-bonus requirements are fulfilled by the nutrients.
+    /// </summary>
+    [PublicAPI]
+    public bool RequirementsFulfilled(Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> requirements, Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2> nutrients)
+    {
+        foreach (var (nutrientId, requirement) in requirements)
+        {
+            if (requirement.Requirement == 0)
+                continue;
+            if (!nutrients.TryGetValue(nutrientId, out var nutrientAmount))
+                return false;
+            if (nutrientAmount < requirement.Requirement)
+                return false;
+        }
+
+        return true;
+    }
+
 }
