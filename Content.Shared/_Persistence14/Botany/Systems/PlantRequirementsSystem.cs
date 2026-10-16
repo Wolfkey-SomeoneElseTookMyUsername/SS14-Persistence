@@ -3,6 +3,7 @@ using Content.Shared._Persistence14.Botany.Components;
 using Content.Shared.Botany.Components;
 using Content.Shared.Botany.Events;
 using Content.Shared.Botany.Systems;
+using Content.Shared.Botany.Traits.Systems;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.FixedPoint;
 using Content.Shared.Popups;
@@ -22,7 +23,7 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popup = default!;
 
 
-    [SubscribeLocalEvent(before: [typeof(PlantHarvestSystem)])]
+    /*[SubscribeLocalEvent(before: [typeof(PlantHarvestSystem)])] TODO: Fix this
     private void OnDoHarvest(Entity<PlantHolderComponent> ent, ref DoHarvestEvent args)
     {
         if (!AllRequirementsFulfilled(ent.Owner))
@@ -31,7 +32,7 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
             ent.Comp.ReadyForHarvest = false;
             args.Cancel();
         }
-    }
+    }*/
 
     /// <summary>
     /// Returns the total requirements for all nutrients in the plant.
@@ -51,8 +52,6 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     public Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> GetAllRequirements(
         Entity<PlantBaseRequirementsComponent?, PlantChemicalsComponent?, PlantComponent?> ent)
     {
-        Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> totalRequirement = new();
-
         Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2>? baseRequirements = null;
         Dictionary<ProtoId<ReagentPrototype>, PlantChemQuantity>? chemicals = null;
         var yield = 1;
