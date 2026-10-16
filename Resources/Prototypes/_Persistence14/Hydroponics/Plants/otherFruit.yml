@@ -118,7 +118,11 @@
     growthStages: 2
   - type: PlantHarvest
     harvestRepeat: Repeat
-  - type: PlantGrowth # TODO: Requirements? Are these obtainable here?
+  - type: PlantBaseRequirements # Currently not obtainable via mutation, but leaving this here anyway. I think plant anomalies might still be able to spawn killer tomatoes?
+    baseRequirements:
+      Nutrient: 10
+      Protein: 10 # Meat
+      Sapient: 5 # It's alive!
   - type: PlantAtmospheric
     lowHeatTolerance: 288 # 15°C
     highHeatTolerance: 308 # 35°C
