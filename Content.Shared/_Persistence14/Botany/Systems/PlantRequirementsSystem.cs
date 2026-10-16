@@ -23,16 +23,16 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popup = default!;
 
 
-    /*[SubscribeLocalEvent(before: [typeof(PlantHarvestSystem)])] TODO: Fix this
-    private void OnDoHarvest(Entity<PlantHolderComponent> ent, ref DoHarvestEvent args)
+    [SubscribeLocalEvent(before: [typeof(PlantHarvestSystem)])]
+    private void OnDoHarvest(Entity<PlantComponent> ent, ref DoHarvestEvent args) // TODO: Make this not require a component that isn't used.
     {
-        if (!AllRequirementsFulfilled(ent.Owner))
+        if (!AllRequirementsFulfilled(ent))
         {
             _popup.PopupCursor(Loc.GetString("plant-component-low-nutrients-cant-harvest-message"), args.User);
-            ent.Comp.ReadyForHarvest = false;
+            //ent.Comp.ReadyForHarvest = false;
             args.Cancel();
         }
-    }*/
+    }
 
     /// <summary>
     /// Returns the total requirements for all nutrients in the plant.
