@@ -130,12 +130,12 @@ public sealed partial class PlantSystem : EntitySystem
                 var markup = Loc.GetString("plant-component-nutrient-requirement-message",
                     ("name", nutrient.LocalizedName),
                     ("color", nutrient.SubstanceColor),
-                    ("requiredNutrients", requirement.Requirement * ent.Comp.Yield),
+                    ("requiredNutrients", requirement.Requirement),
                     ("fulfilled", fulfilled));
                 if (requirement.BonusAmount != 0)
                 {
                     markup += Loc.GetString("plant-component-nutrient-bonus-message",
-                        ("bonusNutrients", requirement.BonusRequirement * ent.Comp.Yield),
+                        ("bonusNutrients", requirement.BonusRequirement),
                         ("fulfilled", bonusFulfilled));
                 }
                 args.PushMarkup(markup);
