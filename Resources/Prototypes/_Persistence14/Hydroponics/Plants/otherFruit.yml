@@ -348,13 +348,9 @@
   - type: PlantChemicals
     chemicals:
       Ammonia: # TODO
-        min: 1
-        max: 15
-        potencyDivisor: 3
+        id: BluePumpkinAmmonia
       Chlorine: # TODO
-        min: 1
-        max: 5
-        potencyDivisor: 5
+        id: BluePumpkinChlorine
       Vitamin:
         id: BluePumpkinVitamin
 

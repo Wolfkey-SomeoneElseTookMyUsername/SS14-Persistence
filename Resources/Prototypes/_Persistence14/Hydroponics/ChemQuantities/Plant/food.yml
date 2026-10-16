@@ -202,10 +202,14 @@
   requirements:
     Water:
       requirement: 5
+    Toxin:
+      requirement: 1
+    Fertilizer:
+      bonusRequirement: 0.4
+      bonusAmount: 2.5
     CarbonDioxide:
-      requirement: 0.5
-      bonusRequirement: 0.5
-      bonusAmount: 5
+      bonusRequirement: 0.25
+      bonusAmount: 2.5
 
 - type: plantChemQuantity
   id: BungoEnzyme
@@ -214,8 +218,11 @@
     Nutrient:
       requirement: 5
     Sugar:
-      bonusRequirement: 2
-      bonusAmount: 5
+      bonusRequirement: 0.4
+      bonusAmount: 2.5
+    CarbonDioxide:
+      bonusRequirement: 0.25
+      bonusAmount: 2.5
 
 - type: plantChemQuantity
   id: PumpkinFlesh

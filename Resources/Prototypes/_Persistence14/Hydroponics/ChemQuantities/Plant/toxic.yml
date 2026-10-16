@@ -136,3 +136,22 @@
     Fertilizer:
       bonusRequirement: 0.5
       bonusAmount: 5
+
+- type: plantChemQuantity
+  id: BluePumpkinAmmonia
+  baseAmount: 10
+  requirements:
+    Nutrient:
+      requirement: 5
+    Water:
+      requirement: 5
+    Protein:
+      bonusRequirement: 5
+      bonusAmount: 5
+
+- type: plantChemQuantity
+  id: BluePumpkinChlorine
+  baseAmount: 5
+  requirements:
+    Toxin:
+      requirement: 5
