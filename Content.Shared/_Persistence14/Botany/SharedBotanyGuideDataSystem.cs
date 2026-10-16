@@ -2,7 +2,7 @@ using Content.Shared.Botany;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
-namespace Content.Shared._Persistence14.Botany;
+namespace Content.Shared._Persistence14.Botany; // TODO: Move to Systems folder
 
 /// <summary>
 /// This handles the chemistry guidebook and caching it.
