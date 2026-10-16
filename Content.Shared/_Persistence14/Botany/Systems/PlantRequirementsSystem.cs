@@ -1,8 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared._Persistence14.Botany.Components;
 using Content.Shared.Botany.Components;
+using Content.Shared.Botany.Events;
 using Content.Shared.Botany.Systems;
 using Content.Shared.FixedPoint;
+using Content.Shared.Popups;
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;
 
@@ -15,6 +17,19 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
 
     [Dependency] private EntityQuery<PlantBaseRequirementsComponent> _requirementsQuery = default!;
     [Dependency] private EntityQuery<PlantChemicalsComponent> _chemQuery = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+
+
+    [SubscribeLocalEvent(before: [typeof(PlantHarvestSystem)])]
+    private void OnDoHarvest(Entity<PlantHolderComponent> ent, ref DoHarvestEvent args)
+    {
+        if (!AllRequirementsFulfilled(ent.Owner))
+        {
+            _popup.PopupCursor(Loc.GetString("plant-component-low-nutrients-cant-harvest-message"), args.User);
+            ent.Comp.ReadyForHarvest = false;
+            args.Cancel();
+        }
+    }
 
     /// <summary>
     /// Returns the total requirements for all nutrients in the plant.

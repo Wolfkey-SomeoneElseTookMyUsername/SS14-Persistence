@@ -9,3 +9,5 @@ plant-component-nutrient-bonus-message = -{ $fulfilled ->
         [true] [color=green]{$bonusNutrients}[/color]
        *[false] {$bonusNutrients}
     }
+
+plant-component-low-nutrients-cant-harvest-message = This plant is missing required nutrients!

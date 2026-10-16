@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using Content.Shared._Persistence14.Botany.Systems;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Botany.Components;
 using Content.Shared.Botany.Events;
@@ -19,6 +20,7 @@ public sealed partial class PlantHarvestSystem : EntitySystem
     [Dependency] private PlantSystem _plant = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private PlantHolderSystem _plantHolder = default!;
+    [Dependency] private PlantRequirementsSystem _requirements = default!; // Persistence
 
     [Dependency] private EntityQuery<PlantHarvestComponent> _harvestQuery = default!;
     [Dependency] private EntityQuery<PlantComponent> _plantQuery = default!;
@@ -42,8 +44,14 @@ public sealed partial class PlantHarvestSystem : EntitySystem
         var timeLastHarvest = ent.Comp.Age - ent.Comp.LastHarvest;
         if (timeLastHarvest > plant.Production && !ent.Comp.ReadyForHarvest)
         {
-            ent.Comp.ReadyForHarvest = true;
-            ent.Comp.LastHarvest = ent.Comp.Age;
+            var fulfilled = _requirements.AllRequirementsFulfilled(ent.Owner);
+            ent.Comp.ReadyForHarvest = fulfilled;
+            if (fulfilled)
+                ent.Comp.LastHarvest = ent.Comp.Age;
+            else
+            {
+                _plantHolder.AdjustsHealth(ent.AsNullable(), 2); // Magic number based off of low nutrient damage in upstream botany, which is a random int between 1 and 3. TODO: Maybe not use magic number?
+            }
         }
 
         Dirty(ent);
