@@ -16,12 +16,11 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
 {
     [Dependency] private PlantSystem _plant = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
 
     [Dependency] private EntityQuery<PlantComponent> _plantQuery = default!;
     [Dependency] private EntityQuery<PlantBaseRequirementsComponent> _requirementsQuery = default!;
     [Dependency] private EntityQuery<PlantChemicalsComponent> _chemQuery = default!;
-    [Dependency] private SharedPopupSystem _popup = default!;
-
 
     [SubscribeLocalEvent(before: [typeof(PlantHarvestSystem)])]
     private void OnDoHarvest(Entity<PlantComponent> ent, ref DoHarvestEvent args) // TODO: Make this not require a component that isn't used.
