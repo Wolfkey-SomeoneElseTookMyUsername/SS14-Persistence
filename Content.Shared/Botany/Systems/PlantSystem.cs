@@ -110,12 +110,12 @@ public sealed partial class PlantSystem : EntitySystem
                 args.PushMarkup(Loc.GetString(mutation));
             }
 
-            var requirements = _plantRequirements.GetAllRequirements(ent.AsNullable()); // Persistence: Everything in this function below this point
+            var requirements = _plantRequirements.GetAllRequirements(ent.Owner); // Persistence: Everything in this function below this point
 
             if (requirements.Count == 0)
                 return;
 
-            if (!_plantRequirements.TryGetFulfilledRequirements(ent.AsNullable(), out var fulfilledRequirements))
+            if (!_plantRequirements.TryGetFulfilledRequirements(ent.Owner, out var fulfilledRequirements))
                 return;
 
             args.PushMarkup(Loc.GetString("plant-component-has-requirements-message"));

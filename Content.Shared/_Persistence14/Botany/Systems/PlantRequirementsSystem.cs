@@ -21,12 +21,12 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     /// </summary>
     [PublicAPI]
     public Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> GetAllRequirements(
-        Entity<PlantComponent?> ent)
+        EntityUid ent)
     {
-        var baseComp = _requirementsQuery.CompOrNull(ent.Owner);
-        var chemicalsComp = _chemQuery.CompOrNull(ent.Owner);
+        var baseComp = _requirementsQuery.CompOrNull(ent);
+        var chemicalsComp = _chemQuery.CompOrNull(ent);
 
-        return GetAllRequirements((ent.Owner, baseComp, chemicalsComp));
+        return GetAllRequirements((ent, baseComp, chemicalsComp));
     }
 
     [PublicAPI]
@@ -73,7 +73,7 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     /// Returns true if all the non-bonus requirements of the plant are fulfilled.
     /// </summary>
     [PublicAPI]
-    public bool AllRequirementsFulfilled(Entity<PlantComponent?> ent)
+    public bool AllRequirementsFulfilled(EntityUid ent)
     {
         if (!_plant.TryGetTray(ent, out var tray))
             return false;
@@ -85,7 +85,7 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     /// Returns true if all the non-bonus requirements of the plant are fulfilled by the nutrients in the tray.
     /// </summary>
     [PublicAPI]
-    public bool AllRequirementsFulfilled(Entity<PlantComponent?> ent, Entity<PlantTrayComponent> tray)
+    public bool AllRequirementsFulfilled(EntityUid ent, Entity<PlantTrayComponent> tray)
     {
 
         var requirements = GetAllRequirements(ent);
@@ -134,7 +134,7 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     /// Returns a whether each of the plant's requirements' mandatory and bonus requirements are fulfilled by the tray's nutrients.
     /// </summary>
     [PublicAPI]
-    public Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)> GetFulfilledRequirements(Entity<PlantComponent?> ent, Entity<PlantTrayComponent> tray)
+    public Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)> GetFulfilledRequirements(EntityUid ent, Entity<PlantTrayComponent> tray)
     {
         var requirements = GetAllRequirements(ent);
         var nutrients = tray.Comp.Nutrients;
