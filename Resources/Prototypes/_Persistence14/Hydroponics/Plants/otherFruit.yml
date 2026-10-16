@@ -347,9 +347,9 @@
     highHeatTolerance: 308 # 35°C
   - type: PlantChemicals
     chemicals:
-      Ammonia: # TODO
+      Ammonia:
         id: BluePumpkinAmmonia
-      Chlorine: # TODO
+      Chlorine:
         id: BluePumpkinChlorine
       Vitamin:
         id: BluePumpkinVitamin
