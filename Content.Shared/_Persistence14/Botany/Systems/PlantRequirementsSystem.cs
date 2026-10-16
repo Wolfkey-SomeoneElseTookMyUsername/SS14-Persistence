@@ -3,6 +3,7 @@ using Content.Shared._Persistence14.Botany.Components;
 using Content.Shared.Botany.Components;
 using Content.Shared.Botany.Events;
 using Content.Shared.Botany.Systems;
+using Content.Shared.Chemistry.Reagent;
 using Content.Shared.FixedPoint;
 using Content.Shared.Popups;
 using JetBrains.Annotations;
@@ -15,6 +16,7 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     [Dependency] private PlantSystem _plant = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
 
+    [Dependency] private EntityQuery<PlantComponent> _plantQuery = default!;
     [Dependency] private EntityQuery<PlantBaseRequirementsComponent> _requirementsQuery = default!;
     [Dependency] private EntityQuery<PlantChemicalsComponent> _chemQuery = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
@@ -38,34 +40,59 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     public Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> GetAllRequirements(
         EntityUid ent)
     {
+        var plantComp = _plantQuery.CompOrNull(ent);
         var baseComp = _requirementsQuery.CompOrNull(ent);
         var chemicalsComp = _chemQuery.CompOrNull(ent);
 
-        return GetAllRequirements((ent, baseComp, chemicalsComp));
+        return GetAllRequirements((ent, baseComp, chemicalsComp, plantComp));
     }
 
     [PublicAPI]
     public Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> GetAllRequirements(
-        Entity<PlantBaseRequirementsComponent?, PlantChemicalsComponent?> ent)
+        Entity<PlantBaseRequirementsComponent?, PlantChemicalsComponent?, PlantComponent?> ent)
     {
         Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> totalRequirement = new();
 
-        if (Resolve(ent.Owner, ref ent.Comp1, false))
+        Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2>? baseRequirements = null;
+        Dictionary<ProtoId<ReagentPrototype>, PlantChemQuantity>? chemicals = null;
+        var yield = 1;
+
+        if (Resolve(ent, ref ent.Comp1, false))
+            baseRequirements = ent.Comp1.BaseRequirements;
+
+        if (Resolve(ent, ref ent.Comp2, false))
+            chemicals = ent.Comp2.Chemicals;
+
+        if (Resolve(ent, ref ent.Comp3, false))
+            yield = ent.Comp3.Yield;
+
+        return GetAllRequirements(baseRequirements, chemicals, yield);
+    }
+
+    [PublicAPI]
+    public Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> GetAllRequirements(
+        Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2>? baseRequirements,
+        Dictionary<ProtoId<ReagentPrototype>, PlantChemQuantity>? chemicals,
+        int yield)
+    {
+        Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> totalRequirement = new();
+
+        if (baseRequirements != null)
         {
-            foreach (var (nutrient, baseRequirement) in ent.Comp1.BaseRequirements)
+            foreach (var (nutrient, baseRequirement) in baseRequirements)
             {
                 NutrientRequirement requirement = new()
                 {
-                    Requirement = baseRequirement,
+                    Requirement = baseRequirement * yield,
                 };
                 totalRequirement.Add(nutrient, requirement);
             }
         }
 
-        if (!Resolve(ent.Owner, ref ent.Comp2, false))
+        if (chemicals == null)
             return totalRequirement;
 
-        foreach (var chemQuantity in ent.Comp2.Chemicals.Values)
+        foreach (var chemQuantity in chemicals.Values)
         {
             var quantityProto = _prototypeManager.Index(chemQuantity.Id);
             foreach (var (nutrient, requirement) in quantityProto.Requirements)
@@ -73,9 +100,9 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
                 if (!totalRequirement.TryAdd(nutrient, requirement))
                 {
                     var newRequirement = totalRequirement[nutrient];
-                    newRequirement.Requirement += requirement.Requirement;
-                    newRequirement.BonusRequirement += requirement.BonusRequirement;
-                    newRequirement.BonusAmount += requirement.BonusAmount;
+                    newRequirement.Requirement += requirement.Requirement * yield;
+                    newRequirement.BonusRequirement += requirement.BonusRequirement * yield;
+                    newRequirement.BonusAmount += requirement.BonusAmount * yield;
                     totalRequirement[nutrient] = newRequirement;
                 }
             }
