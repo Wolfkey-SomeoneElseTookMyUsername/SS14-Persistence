@@ -1,4 +1,4 @@
-using Content.Shared.Botany.Systems;
+using Content.Shared._Persistence14.Botany.Systems;
 using Content.Shared.FixedPoint;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -9,7 +9,7 @@ namespace Content.Shared._Persistence14.Botany.Components;
 /// This is used for...
 /// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState(fieldDeltas: true, raiseAfterAutoHandleState: true)]
-[Access(typeof(PlantChemicalsSystem))]
+[Access(typeof(PlantRequirementsSystem))]
 public sealed partial class PlantBaseRequirementsComponent : Component
 {
     /// <summary>

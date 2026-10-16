@@ -1,6 +1,7 @@
 using System.Linq;
 using JetBrains.Annotations;
 using Content.Shared._Persistence14.Botany;
+using Content.Shared._Persistence14.Botany.Systems;
 using Content.Shared.Botany.Components;
 using Content.Shared.Botany.Events;
 using Content.Shared.Botany.Traits.Components;
@@ -19,14 +20,13 @@ public sealed partial class PlantSystem : EntitySystem
     [Dependency] private IGameTiming _gameTiming = default!;
     [Dependency] private PlantMutationSystem _mutation = default!;
     [Dependency] private PlantHolderSystem _plantHolder = default!;
-    [Dependency] private PlantChemicalsSystem _plantChemicals = default!; // Persistence
+    [Dependency] private PlantRequirementsSystem _plantRequirements = default!; // Persistence
     [Dependency] private IPrototypeManager _prototypeManager = default!; // Persistence
 
     [Dependency] private EntityQuery<PlantHolderComponent> _holderQuery = default!;
     //[Dependency] private EntityQuery<PlantToxinsComponent> _toxinsQuery = default!; Persistence 14: Replaced toxins as part of the plant nutrient rework.
     [Dependency] private EntityQuery<PlantWeedPestComponent> _weedPestQuery = default!;
     [Dependency] private EntityQuery<PlantTrayComponent> _trayQuery = default!;
-    [Dependency] private EntityQuery<PlantChemicalsComponent> _chemQuery = default!; // Persistence
 
     private readonly List<Entity<PlantHolderComponent>> _holdersToUpdate = [];
 
@@ -110,27 +110,24 @@ public sealed partial class PlantSystem : EntitySystem
                 args.PushMarkup(Loc.GetString(mutation));
             }
 
-            if (_chemQuery.TryGetComponent(ent.Owner, out var chemicals)) // Persistence: Plant nutrient rework
+            var requirements = _plantRequirements.GetAllRequirements(ent.AsNullable());
+            if (requirements.Count > 0)
+                args.PushMarkup(Loc.GetString("plant-component-has-requirements-message"));
+            foreach (var (nutrientId, requirement) in requirements)
             {
-                var requirements = _plantChemicals.GetAllRequirements((ent.Owner, chemicals));
-                if (requirements.Count > 0)
-                    args.PushMarkup(Loc.GetString("plant-component-has-requirements-message"));
-                foreach (var (nutrientId, requirement) in requirements)
+                var nutrient = _prototypeManager.Index(nutrientId);
+                var markup = Loc.GetString("plant-component-nutrient-requirement-message",
+                    ("name", nutrient.LocalizedName),
+                    ("color", nutrient.SubstanceColor),
+                    ("requiredNutrients", requirement.Requirement * ent.Comp.Yield),
+                    ("fulfilled", false));
+                if (requirement.BonusAmount != 0)
                 {
-                    var nutrient = _prototypeManager.Index(nutrientId);
-                    var markup = Loc.GetString("plant-component-nutrient-requirement-message",
-                        ("name", nutrient.LocalizedName),
-                        ("color", nutrient.SubstanceColor),
-                        ("requiredNutrients", requirement.Requirement * ent.Comp.Yield),
+                    markup += Loc.GetString("plant-component-nutrient-bonus-message",
+                        ("bonusNutrients", requirement.BonusRequirement * ent.Comp.Yield),
                         ("fulfilled", false));
-                    if (requirement.BonusAmount != 0)
-                    {
-                        markup += Loc.GetString("plant-component-nutrient-bonus-message",
-                            ("bonusNutrients", requirement.BonusRequirement * ent.Comp.Yield),
-                            ("fulfilled", false));
-                    }
-                    args.PushMarkup(markup);
                 }
+                args.PushMarkup(markup);
             }
         }
     }

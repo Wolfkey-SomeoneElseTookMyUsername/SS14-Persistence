@@ -20,9 +20,6 @@ public sealed partial class PlantChemicalsSystem : EntitySystem
     [Dependency] private BotanySystem _botany = default!;
     [Dependency] private PlantMutationSystem _mutation = default!;
     [Dependency] private IGameTiming _timing = default!;
-    [Dependency] private IPrototypeManager _prototypeManager = default!; // Persistence
-
-    [Dependency] private EntityQuery<PlantBaseRequirementsComponent> _requirementsQuery = default!; // Persistence
 
     [SubscribeLocalEvent]
     private void OnCrossPollinate(Entity<PlantChemicalsComponent> ent, ref PlantCrossPollinateEvent args)
@@ -65,99 +62,4 @@ public sealed partial class PlantChemicalsSystem : EntitySystem
         ent.Comp.Chemicals[chemicalId] = seedChemQuantity;
         Dirty(ent);*/ // TODO: Re-implement this
     }
-
-    /// <summary>
-    /// Persistence: Returns the total requirements for all nutrients.
-    /// </summary>
-    [PublicAPI]
-    public Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> GetAllRequirements(Entity<PlantChemicalsComponent?> ent)
-    {
-        Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> totalRequirement = new();
-
-        if (_requirementsQuery.TryComp(ent, out var baseRequirementComp))
-        {
-            foreach (var (nutrient, baseRequirement) in baseRequirementComp.BaseRequirements)
-            {
-                NutrientRequirement requirement = new()
-                {
-                    Requirement = baseRequirement,
-                };
-                totalRequirement.Add(nutrient, requirement);
-            }
-        }
-
-        if (!Resolve(ent, ref ent.Comp, false))
-            return totalRequirement;
-
-        foreach (var chemQuantity in ent.Comp.Chemicals.Values)
-        {
-            var quantityProto = _prototypeManager.Index(chemQuantity.Id);
-            foreach (var (nutrient, requirement) in quantityProto.Requirements)
-            {
-                if (!totalRequirement.TryAdd(nutrient, requirement))
-                {
-                    var newRequirement = totalRequirement[nutrient];
-                    newRequirement.Requirement += requirement.Requirement;
-                    newRequirement.BonusRequirement += requirement.BonusRequirement;
-                    newRequirement.BonusAmount += requirement.BonusAmount;
-                    totalRequirement[nutrient] = newRequirement;
-                }
-            }
-        }
-
-        return totalRequirement;
-    }
-
-    /// <summary>
-    /// Persistence: Returns the total requirement for the specified nutrient.
-    /// </summary>
-    [PublicAPI]
-    public FixedPoint2 GetTotalRequirement(Entity<PlantChemicalsComponent?> ent, ProtoId<PlantNutrientPrototype> nutrientId)
-    {
-        var totalRequirement = FixedPoint2.Zero;
-        if (!Resolve(ent, ref ent.Comp, false))
-            return totalRequirement;
-
-        foreach (var quantity in ent.Comp.Chemicals.Values)
-        {
-            var quantityProto = _prototypeManager.Index(quantity.Id);
-            if (quantityProto.Requirements.TryGetValue(nutrientId, out var requirement))
-            {
-                totalRequirement += requirement.Requirement;
-            }
-        }
-
-        if (!_requirementsQuery.TryComp(ent, out var baseRequirementComp))
-            return totalRequirement;
-
-        if (baseRequirementComp.BaseRequirements.TryGetValue(nutrientId, out var baseRequirement))
-        {
-            totalRequirement += baseRequirement;
-        }
-
-        return totalRequirement;
-    }
-
-    /// <summary>
-    /// Persistence: Returns the combined bonus requirement for the specified nutrient of all the plant's chemicals.
-    /// </summary>
-    [PublicAPI]
-    public FixedPoint2 GetTotalBonusRequirement(Entity<PlantChemicalsComponent?> ent, ProtoId<PlantNutrientPrototype> nutrientId)
-    {
-        var totalRequirement = FixedPoint2.Zero;
-        if (!Resolve(ent, ref ent.Comp, false))
-            return totalRequirement;
-
-        foreach (var quantity in ent.Comp.Chemicals.Values)
-        {
-            var quantityProto = _prototypeManager.Index(quantity.Id);
-            if (quantityProto.Requirements.TryGetValue(nutrientId, out var requirement))
-            {
-                totalRequirement += requirement.BonusRequirement;
-            }
-        }
-
-        return totalRequirement;
-    }
-
 }
