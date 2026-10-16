@@ -19,7 +19,8 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     /// Returns the total requirements for all nutrients in the plant.
     /// </summary>
     [PublicAPI]
-    public Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> GetAllRequirements(Entity<PlantComponent?> ent)
+    public Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> GetAllRequirements(
+        Entity<PlantComponent?> ent)
     {
         var baseComp = _requirementsQuery.CompOrNull(ent.Owner);
         var chemicalsComp = _chemQuery.CompOrNull(ent.Owner);
@@ -63,6 +64,7 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
                 }
             }
         }
+
         return totalRequirement;
     }
 
@@ -70,32 +72,33 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     /// Returns true if all the non-bonus requirements of the plant are fulfilled.
     /// </summary>
     [PublicAPI]
-    public bool RequirementsFulfilled(Entity<PlantComponent?> ent)
+    public bool AllRequirementsFulfilled(Entity<PlantComponent?> ent)
     {
         if (!_plant.TryGetTray(ent, out var tray))
             return false;
 
-        return RequirementsFulfilled(ent, tray);
+        return AllRequirementsFulfilled(ent, tray);
     }
 
     /// <summary>
     /// Returns true if all the non-bonus requirements of the plant are fulfilled by the nutrients in the tray.
     /// </summary>
     [PublicAPI]
-    public bool RequirementsFulfilled(Entity<PlantComponent?> ent, Entity<PlantTrayComponent> tray)
+    public bool AllRequirementsFulfilled(Entity<PlantComponent?> ent, Entity<PlantTrayComponent> tray)
     {
 
         var requirements = GetAllRequirements(ent);
         var nutrients = tray.Comp.Nutrients;
 
-        return RequirementsFulfilled(requirements, nutrients);
+        return AllRequirementsFulfilled(requirements, nutrients);
     }
 
     /// <summary>
     /// Returns true if all the non-bonus requirements are fulfilled by the nutrients.
     /// </summary>
     [PublicAPI]
-    public bool RequirementsFulfilled(Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> requirements, Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2> nutrients)
+    public bool AllRequirementsFulfilled(Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> requirements,
+        Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2> nutrients)
     {
         foreach (var (nutrientId, requirement) in requirements)
         {
@@ -108,6 +111,56 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Attempts to return a whether each of the plant's requirements' mandatory and bonus requirements are fulfilled. Should only fail if a plant is not in a tray for some reason.
+    /// </summary>
+    [PublicAPI]
+    public bool TryGetRequirementInfo(Entity<PlantComponent?> ent, out Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)>? info)
+    {
+        if (!_plant.TryGetTray(ent, out var tray))
+        {
+            info = null;
+            return false;
+        }
+
+        info = GetRequirementInfo(ent, tray);
+        return true;
+    }
+
+    /// <summary>
+    /// Returns a whether each of the plant's requirements' mandatory and bonus requirements are fulfilled by the tray's nutrients.
+    /// </summary>
+    [PublicAPI]
+    public Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)> GetRequirementInfo(Entity<PlantComponent?> ent, Entity<PlantTrayComponent> tray)
+    {
+        var requirements = GetAllRequirements(ent);
+        var nutrients = tray.Comp.Nutrients;
+
+        return GetRequirementInfo(requirements, nutrients);
+    }
+
+    /// <summary>
+    /// Returns a whether each of the requirements' mandatory and bonus requirements are fulfilled.
+    /// </summary>
+    [PublicAPI]
+    public Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)> GetRequirementInfo(Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> requirements,
+        Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2> nutrients)
+    {
+        Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)> info = new();
+
+        foreach (var (nutrientId, requirement) in requirements)
+        {
+            var totalBonus = requirement.Requirement + requirement.BonusRequirement;
+
+            if (!nutrients.TryGetValue(nutrientId, out var nutrientAmount))
+                info[nutrientId] = (requirement.Requirement == 0, totalBonus == 0);
+            else
+                info[nutrientId] = (requirement.Requirement <= nutrientAmount, totalBonus <= nutrientAmount);
+        }
+
+        return info;
     }
 
 }
