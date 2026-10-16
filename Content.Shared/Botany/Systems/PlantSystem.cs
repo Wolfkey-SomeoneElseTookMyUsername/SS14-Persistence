@@ -110,22 +110,33 @@ public sealed partial class PlantSystem : EntitySystem
                 args.PushMarkup(Loc.GetString(mutation));
             }
 
-            var requirements = _plantRequirements.GetAllRequirements(ent.AsNullable());
-            if (requirements.Count > 0)
-                args.PushMarkup(Loc.GetString("plant-component-has-requirements-message"));
+            var requirements = _plantRequirements.GetAllRequirements(ent.AsNullable()); // Persistence: Everything in this function below this point
+
+            if (requirements.Count == 0)
+                return;
+
+            if (!_plantRequirements.TryGetFulfilledRequirements(ent.AsNullable(), out var fulfilledRequirements))
+                return;
+
+            args.PushMarkup(Loc.GetString("plant-component-has-requirements-message"));
+
             foreach (var (nutrientId, requirement) in requirements)
             {
                 var nutrient = _prototypeManager.Index(nutrientId);
+
+                var (fulfilled, bonusFulfilled) = fulfilledRequirements.GetValueOrDefault(nutrientId, (false, false));
+
+
                 var markup = Loc.GetString("plant-component-nutrient-requirement-message",
                     ("name", nutrient.LocalizedName),
                     ("color", nutrient.SubstanceColor),
                     ("requiredNutrients", requirement.Requirement * ent.Comp.Yield),
-                    ("fulfilled", false));
+                    ("fulfilled", fulfilled));
                 if (requirement.BonusAmount != 0)
                 {
                     markup += Loc.GetString("plant-component-nutrient-bonus-message",
                         ("bonusNutrients", requirement.BonusRequirement * ent.Comp.Yield),
-                        ("fulfilled", false));
+                        ("fulfilled", bonusFulfilled));
                 }
                 args.PushMarkup(markup);
             }

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Content.Shared._Persistence14.Botany.Components;
 using Content.Shared.Botany.Components;
 using Content.Shared.Botany.Systems;
@@ -117,7 +118,7 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     /// Attempts to return a whether each of the plant's requirements' mandatory and bonus requirements are fulfilled. Should only fail if a plant is not in a tray for some reason.
     /// </summary>
     [PublicAPI]
-    public bool TryGetRequirementInfo(Entity<PlantComponent?> ent, out Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)>? info)
+    public bool TryGetFulfilledRequirements(Entity<PlantComponent?> ent, [NotNullWhen(true)] out Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)>? info)
     {
         if (!_plant.TryGetTray(ent, out var tray))
         {
@@ -125,7 +126,7 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
             return false;
         }
 
-        info = GetRequirementInfo(ent, tray);
+        info = GetFulfilledRequirements(ent, tray);
         return true;
     }
 
@@ -133,19 +134,19 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
     /// Returns a whether each of the plant's requirements' mandatory and bonus requirements are fulfilled by the tray's nutrients.
     /// </summary>
     [PublicAPI]
-    public Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)> GetRequirementInfo(Entity<PlantComponent?> ent, Entity<PlantTrayComponent> tray)
+    public Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)> GetFulfilledRequirements(Entity<PlantComponent?> ent, Entity<PlantTrayComponent> tray)
     {
         var requirements = GetAllRequirements(ent);
         var nutrients = tray.Comp.Nutrients;
 
-        return GetRequirementInfo(requirements, nutrients);
+        return GetFulfilledRequirements(requirements, nutrients);
     }
 
     /// <summary>
     /// Returns a whether each of the requirements' mandatory and bonus requirements are fulfilled.
     /// </summary>
     [PublicAPI]
-    public Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)> GetRequirementInfo(Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> requirements,
+    public Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)> GetFulfilledRequirements(Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> requirements,
         Dictionary<ProtoId<PlantNutrientPrototype>, FixedPoint2> nutrients)
     {
         Dictionary<ProtoId<PlantNutrientPrototype>, (bool, bool)> info = new();
