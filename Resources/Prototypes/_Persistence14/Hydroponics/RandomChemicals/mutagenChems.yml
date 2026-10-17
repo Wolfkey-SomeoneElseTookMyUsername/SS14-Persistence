@@ -2,7 +2,61 @@
 - type: weightedRandomFillPlantChemical
   id: RandomPickChemicalMutagen
   fills:
-  # Weight 2 chemicals
+  # Weight 1 chemicals
+  - quantityId: RandomToxin
+    weight: 1
+    reagents:
+    - Toxin
+  - quantityId: RandomCarpoToxin
+    weight: 1
+    reagents:
+    - CarpoToxin
+  - quantityId: RandomSulfuricAcid
+    weight: 1
+    reagents:
+    - SulfuricAcid
+  - quantityId: RandomLicoxide
+    weight: 1
+    reagents:
+    - Licoxide
+  - quantityId: RandomNapalm
+    weight: 1
+    reagents:
+    - Napalm
+  - quantityId: RandomChlorineTrifluoride
+    weight: 1
+    reagents:
+    - ChlorineTrifluoride
+  - quantityId: RandomPhosphorus
+    weight: 1
+    reagents:
+    - Phosphorus
+  - quantityId: RandomAlcoholic
+    weight: 1
+    reagents:
+    - AtomicBomb
+    - CogChamp
+  - quantityId: RandomSoda
+    weight: 1
+    reagents:
+    - ChangelingSting
+  - quantityId: RandomWehJuice
+    weight: 1
+    reagents:
+    - JuiceThatMakesYouWeh
+  - quantityId: RandomTearGas
+    weight: 1
+    reagents:
+    - TearGas
+  - quantityId: RandomLipolicide
+    weight: 1
+    reagents:
+    - Lipolicide
+  - quantityId: RandomBenzene
+    weight: 1
+    reagents:
+    - Benzene
+    # Weight 2 chemicals
   - quantityId: RandomChloralHydrate
     weight: 2
     reagents:
@@ -48,7 +102,7 @@
     weight: 2
     reagents:
     - Bleach
-# Weight 3 chemicals
+  # Weight 3 chemicals
   - quantityId: RandomNorepinephricAcid
     weight: 3
     reagents:
@@ -139,7 +193,7 @@
     reagents:
     - Wine
     - Beer
-# Weight 3.5 chemicals
+  # Weight 3.5 chemicals
   - quantityId: BluePumpkinVitamin
     weight: 3.5
     reagents:

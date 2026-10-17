@@ -64,3 +64,15 @@
     Fertilizer:
       bonusRequirement: 0.6
       bonusAmount: 3
+
+- type: plantChemQuantity
+  id: RandomPhosphorus
+  baseAmount: 4
+  requirements: # TODO: Replace placeholder requirements
+    Nutrient:
+      requirement: 4
+      bonusRequirement: 2
+      bonusAmount: 3
+    Fertilizer:
+      bonusRequirement: 0.6
+      bonusAmount: 3
