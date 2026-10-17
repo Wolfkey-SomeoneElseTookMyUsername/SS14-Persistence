@@ -151,6 +151,11 @@
     walkModifier: 0.7
     sprintModifier: 0.7
   - type: DamageExaminable
+  - type: Upgradeable
+    upgrades:
+      MicrowaveCapacityMarine : 0
+      MicrowaveSpeedPrecursor : 0
+
 
 - type: entity
   id: SyndicateMicrowave
@@ -174,6 +179,18 @@
     providedRecipes:
     - RecipeBaguetteSword
     - RecipeThrowingCroissant
+    - RecipeDonkPocketPlain
+    - RecipeDonkPocketDank
+    - RecipeDonkPocketSpicy
+    - RecipeDonkPocketTeriyaki
+    - RecipeDonkPocketPizza
+    - RecipeDonkPocketHonk
+    - RecipeDonkPocketBerry
+    - RecipeDonkPocketStonk
+    - RecipeDonkPocketCarp
+    - RecipeDonkPocketDink
+    - RecipeDonkPocketMoth
+
   - type: Item
     sprite: Structures/Machines/microwave_syndie.rsi
     size: Ginormous

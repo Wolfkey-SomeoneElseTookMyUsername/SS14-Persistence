@@ -50,6 +50,16 @@
   - type: PowerState
     idlePowerDraw: 150
     workingPowerDraw: 1000
+  - type: RecipeContainer
+  - type: RecipeRelayReceiver
+  - type: AccessReader
+  - type: RecipeRelayAccessCondition
+  - type: RecipeRelayPoweredCondition
+  - type: RecipeRelaySameGridCondition
+  - type: ActivatableUIRequiresAccess
+  - type: Upgradeable
+    upgrades:
+      LatheSpeedPrecursor : 0
 
 # a lathe that can be sped up with space lube / slowed down with glue
 - type: entity
@@ -204,6 +214,7 @@
     staticPacks:
     - ChemistryStatic
     - SurgeryStatic
+    - AnomalyGenerationBasic
     dynamicPacks:
     - AdvancedTools
     - ScienceEquipment

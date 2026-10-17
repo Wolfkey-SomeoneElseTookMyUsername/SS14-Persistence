@@ -50,6 +50,7 @@ public sealed partial class RadioSystem : SharedRadioSystem
         base.Initialize();
         SubscribeLocalEvent<IntrinsicRadioReceiverComponent, RadioReceiveEvent>(OnIntrinsicReceive);
         SubscribeLocalEvent<IntrinsicRadioTransmitterComponent, EntitySpokeEvent>(OnIntrinsicSpeak);
+        SubscribeLocalEvent<TelecomServerComponent, ExaminedEvent>(OnServerExamined);
     }
 
     private void OnServerExamined(Entity<TelecomServerComponent> ent, ref ExaminedEvent args)
@@ -221,6 +222,8 @@ public sealed partial class RadioSystem : SharedRadioSystem
                                                              !intercom.SupportedChannels.Contains(channel.ID)))
                     continue;
             }
+
+
 
             if (!channel.LongRange && transform.MapID != sourceMapId && !radio.GlobalReceive)
                 continue;

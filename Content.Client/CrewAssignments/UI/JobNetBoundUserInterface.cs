@@ -1,6 +1,7 @@
 using Content.Client.CrewAssignments.UI;
 using Content.Client.MessageBoard.UI;
 using Content.Client.UserInterface.Systems.Guidebook;
+using Content.Shared._Persistence14.Rumors.Prototypes;
 using Content.Shared.Cargo.Components;
 using Content.Shared.CrewAssignments;
 using Content.Shared.CrewAssignments.Components;
@@ -58,8 +59,6 @@ public sealed class JobNetBoundUserInterface : BoundUserInterface
         if (state is not JobNetUpdateState cState)
             return;
         _menu.UpdateState(cState);
-
-
     }
 
     public void CancelRumor(int ind)
@@ -67,8 +66,18 @@ public sealed class JobNetBoundUserInterface : BoundUserInterface
         SendMessage(new JobNetCancelRumorMessage(ind));
     }
 
-    internal void TransferRumor(int rumorIndex, string text)
+    public void TransferRumor(int rumorIndex, string text)
     {
         SendMessage(new JobNetTransferRumorMessage(rumorIndex, text));
+    }
+
+    public void RumorRewardPurchase(ProtoId<RumorRewardPrototype> rewardID, ProtoId<MetaFactionLevelPrototype> levelID, ProtoId<MetaFactionPrototype> factionID)
+    {
+        SendMessage(new JobNetRumorRewardPurchaseMessage(rewardID, levelID, factionID));
+    }
+
+    public void OnInsightPurchase(string iD)
+    {
+        SendMessage(new JobNetInsightPurchaseMessage(iD));
     }
 }

@@ -1138,6 +1138,10 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("species");
 
+                    b.Property<string>("TurningPoint")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("turning_point");
+
                     b.Property<string>("Voice")
                         .HasColumnType("TEXT")
                         .HasColumnName("voice");

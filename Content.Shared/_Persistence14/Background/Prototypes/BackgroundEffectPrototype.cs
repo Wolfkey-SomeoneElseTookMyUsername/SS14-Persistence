@@ -1,3 +1,4 @@
+using Content.Shared._Persistence14.Codex.Prototypes;
 using Content.Shared._Persistence14.Rumors.Prototypes;
 using Content.Shared.Roles;
 using Content.Shared.Traits;
@@ -10,10 +11,8 @@ public sealed partial class BackgroundEffectPrototype : IPrototype, IEquipmentLo
 {
     [IdDataField]
     public string ID { get; private set; } = "";
-
     [DataField]
     public string Description { get; set; } = string.Empty;
-
     /// <inheritdoc />
     [DataField]
     public Dictionary<string, EntProtoId> Equipment { get; set; } = new();
@@ -37,5 +36,10 @@ public sealed partial class BackgroundEffectPrototype : IPrototype, IEquipmentLo
 
     [DataField]
     public Dictionary<ProtoId<MetaFactionPrototype>, int> ExtraFactionRumors { get; set; } = new();
+
+    [DataField]
+    public List<ProtoId<CodexEntryPrototype>> CodexEntries = new();
+    [DataField]
+    public int BonusCash = 0;
 
 }

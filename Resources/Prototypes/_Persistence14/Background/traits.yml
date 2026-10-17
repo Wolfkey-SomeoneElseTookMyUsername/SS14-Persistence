@@ -113,3 +113,9 @@
   description: ps14-background-origin-shadow-desc
   selectable: false
 
+- type: trait
+  id: NexusPledge
+  name: ps14-background-origin-freelancer-pledge
+  description: ps14-background-origin-freelancer-pledge-desc
+  selectable: false
+

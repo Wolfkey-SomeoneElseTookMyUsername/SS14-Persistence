@@ -1,7 +1,9 @@
 using Content.Client.Message;
 using Content.Client.MessageBoard.UI;
 using Content.Client.Store.Ui;
+using Content.Shared._Persistence14.Codex.Prototypes;
 using Content.Shared._Persistence14.Rumors.Prototypes;
+using Content.Shared.Cargo.Components;
 using Content.Shared.CrewAssignments;
 using Content.Shared.CrewAssignments.Prototypes;
 using Content.Shared.CrewMetaRecords;
@@ -13,6 +15,7 @@ using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using System.Linq;
 using static Robust.Client.UserInterface.Controls.MenuBar;
 
 namespace Content.Client.CrewAssignments.UI;
@@ -22,9 +25,11 @@ public sealed partial class JobNetMenu : DefaultWindow
 {
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    private bool _rumorRewardsBuilt = false;
     public TimeSpan UntilNextPay = TimeSpan.Zero;
     public TimeSpan UntilNextPrec = TimeSpan.Zero;
     public TimeSpan UntilNextRumor = TimeSpan.Zero;
+    public TimeSpan UntilNextReward = TimeSpan.Zero;
     public SpriteSystem? _spriteSystem;
     public JobNetBoundUserInterface? Owner;
     public Action<string>? OnLabelButtonPressed;
@@ -33,7 +38,7 @@ public sealed partial class JobNetMenu : DefaultWindow
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
         MasterTabContainer.SetTabTitle(0, "Job Network");
-        MasterTabContainer.SetTabTitle(1, "History");
+        MasterTabContainer.SetTabTitle(1, "Insights");
         MasterTabContainer.SetTabTitle(2, "Sector");
         MasterTabContainer.SetTabTitle(3, "Upgrades");
         MasterTabContainer.SetTabTitle(4, "Rumors");
@@ -42,6 +47,13 @@ public sealed partial class JobNetMenu : DefaultWindow
 
     public void UpdateState(JobNetUpdateState state)
     {
+        List<TradeStationComponent> stations = new();
+        var query = _entityManager.EntityQueryEnumerator<TradeStationComponent>();
+        while (query.MoveNext(out var uid, out var station))
+        {
+            stations.Add(station);
+        }
+
         if (state.SpendAuth)
         {
             SLDetails.Visible = true;
@@ -111,27 +123,49 @@ public sealed partial class JobNetMenu : DefaultWindow
             CompletedObjectives.AddChild(entry);
         }
 
-        CodexContainer.RemoveAllChildren();
 
         var charName = "";
         if (localPlayer != null)
             charName = _entityManager.GetComponent<MetaDataComponent>(localPlayer.Value).EntityName;
-        int totalNum = 0;
-        int lockedNum = 0;
-        foreach (var codexEntry in state.CodexEntries)
+
+        var codexCategories = _prototypeManager.EnumeratePrototypes<CodexCategoryPrototype>();
+        Dictionary<ProtoId<CodexCategoryPrototype>, List<ProtoId<CodexEntryPrototype>>> sortedCodex = new();
+        foreach (var codexCategory in codexCategories.OrderBy(P => P.Order).ThenBy(p => p.Name).ToList())
         {
-            totalNum++;
-            Button button = new();
-            if (!codexEntry.Visible && !codexEntry.Whitelist.Contains(charName))
-            {
-                lockedNum++;
-                button.Disabled = true;
-            }
-            button.Text = codexEntry.Title;
-            button.OnPressed += _ => OnSelectCodex(codexEntry.Title, codexEntry.Description);
-            CodexContainer.AddChild(button);
+            sortedCodex[codexCategory.ID] = new();
         }
-        UnlockedNumberLabel.Text = $"[head=3][color=yellow]{totalNum - lockedNum}/{totalNum}[/color] Codex Entries Unlocked[/head]";
+        var codexEntries = _prototypeManager.EnumeratePrototypes<CodexEntryPrototype>();
+        foreach (var codexEntry in codexEntries.OrderBy(P => P.Order).ThenBy(p => p.Name).ToList())
+        {
+            if(sortedCodex.ContainsKey(codexEntry.Category))
+            {
+                sortedCodex[codexEntry.Category].Add(codexEntry.ID);
+            }
+        }
+        CodexCategoryTC.RemoveAllChildren();
+        foreach (var kv in sortedCodex)
+        {
+            var codexCat = kv.Key;
+            var entryList = kv.Value;
+            var codexCatProto = _prototypeManager.Index(codexCat);
+            CodexPageFragment codexPage = new(this);
+            codexPage.Name = codexCatProto.Name;
+            codexPage.UpdateState(codexCat, entryList, state.CodexEntries);
+            CodexCategoryTC.AddChild(codexPage);
+        }
+        LevelBar.MaxValue = 5;
+        LevelBar.Value = state.CodexUnlocksSince;
+        ContentLabel.Text = $"{state.CodexUnlocksSince} / 5";
+        InsightPoints.Text = state.UnspentInsights.ToString();
+        var insightCategories = _prototypeManager.EnumeratePrototypes<InsightCategoryPrototype>();
+        InsightsBox.RemoveAllChildren();
+        foreach (var insightCategory in insightCategories.OrderBy(p => p.Order)
+                                                         .ThenBy(p => p.Name)
+                                                         .ToList())
+        {
+            InsightBoxFragment box = new(insightCategory, state.UnlockedInsights, state.UnspentInsights > 0, this, state.SectorAwake);
+            InsightsBox.AddChild(box);
+        }
         _prototypeManager.Resolve(state.Level, out var levelProto);
         if (levelProto != null)
         {
@@ -162,23 +196,25 @@ public sealed partial class JobNetMenu : DefaultWindow
         var metaFactions = _prototypeManager.EnumeratePrototypes<MetaFactionPrototype>();
         CurrentGrid.RemoveAllChildren();
         ReputationsGrid.RemoveAllChildren();
-        foreach(var faction in metaFactions)
+        Dictionary<ProtoId<MetaFactionPrototype>, int> reputations = new();
+        foreach (var faction in metaFactions.OrderBy(p => p.Order).ThenBy(p => p.Name).ToList())
         {
             int rep = 0;
             if (state.MetaFactionReputations.TryGetValue(faction.ID, out var repVal))
                 rep = repVal;
+            reputations[faction.ID] = rep;
             ReputationBoxFragment repLabel = new(faction, rep);
             ReputationsGrid.AddChild(repLabel);
         }
         int rind = 0;
-        foreach(var rumor in state.Rumors)
+        foreach (var rumor in state.Rumors)
         {
             RumorBoxFragment rumorLabel = new(rumor);
             rumorLabel.RumorIndex = rind;
             rind++;
             rumorLabel.CancelBtn.OnPressed += args =>
             {
-                if(Owner != null) Owner.CancelRumor(rumorLabel.RumorIndex);
+                if (Owner != null) Owner.CancelRumor(rumorLabel.RumorIndex);
             };
             rumorLabel.TransferBtn.OnPressed += args =>
             {
@@ -186,10 +222,15 @@ public sealed partial class JobNetMenu : DefaultWindow
             };
             CurrentGrid.AddChild(rumorLabel);
         }
-        if(state.RumorCooldown != null)
+        if (state.RumorCooldown != null)
         {
-            RumorCooldownLbl.Text = $"Next rumor in:{state.RumorCooldown.Value.ToString("mm\\:ss")}";
+            RumorCooldownLbl.Text = $"{state.RumorCooldown.Value.ToString("hh\\:mm\\:ss")}";
             UntilNextRumor = state.RumorCooldown.Value;
+        }
+        if (state.RewardCooldown != null)
+        {
+            RewardCooldownLbl.Text = $"{state.RewardCooldown.Value.ToString("hh\\:mm\\:ss")}";
+            UntilNextReward = state.RewardCooldown.Value;
         }
         RumorLimitLbl.Text = $"{state.Rumors.Count.ToString()}/4 Available";
 
@@ -220,7 +261,40 @@ public sealed partial class JobNetMenu : DefaultWindow
                 ActiveConversations.AddChild(convoButton);
             }
         }
-
+        if (_rumorRewardsBuilt == false)
+        {
+            _rumorRewardsBuilt = true;
+            foreach (var kv in state.RumorRewards)
+            {
+                var faction = kv.Key;
+                var factionProto = _prototypeManager.Index(faction);
+                var rewards = kv.Value;
+                var rep = reputations[faction];
+                RumorRewardPageFragment box = new(this);
+                box.FactionId = faction;
+                box.Name = factionProto.Name;
+                RumorRewardsTC.AddChild(box);
+                box.UpdateState(rewards, rep, factionProto, state.Balance);
+            }
+        }
+        else
+        {
+            foreach (var kv in state.RumorRewards)
+            {
+                var faction = kv.Key;
+                var factionProto = _prototypeManager.Index(faction);
+                var rewards = kv.Value;
+                var rep = reputations[faction];
+                foreach (var box in RumorRewardsTC.Children)
+                {
+                    if (box is RumorRewardPageFragment page && page.FactionId == faction)
+                    {
+                        page.UpdateState(rewards, rep, factionProto, state.Balance);
+                    }
+                }
+            }
+        }
+        
     }
 
 
@@ -241,7 +315,12 @@ public sealed partial class JobNetMenu : DefaultWindow
         UntilNextRumor -= TimeSpan.FromSeconds(deltaSeconds);
         if (UntilNextRumor > TimeSpan.Zero)
         {
-            RumorCooldownLbl.Text = UntilNextRumor.ToString("mm\\:ss");
+            RumorCooldownLbl.Text = UntilNextRumor.ToString("hh\\:mm\\:ss");
+        }
+        UntilNextReward -= TimeSpan.FromSeconds(deltaSeconds);
+        if (UntilNextReward > TimeSpan.Zero)
+        {
+            RewardCooldownLbl.Text = UntilNextReward.ToString("hh\\:mm\\:ss");
         }
     }
 
@@ -251,6 +330,11 @@ public sealed partial class JobNetMenu : DefaultWindow
         UpdateSkipButton(args.DeltaSeconds);
     }
 
+    public void RumorRewardPurchase(ProtoId<RumorRewardPrototype> rewardID, ProtoId<MetaFactionLevelPrototype> levelID, ProtoId<MetaFactionPrototype> factionID)
+    {
+        if(Owner == null) return;
+        Owner.RumorRewardPurchase(rewardID, levelID, factionID);
+    }
 }
 public sealed class JobButton : Button
 {

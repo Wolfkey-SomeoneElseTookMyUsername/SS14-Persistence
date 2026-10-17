@@ -434,7 +434,7 @@ public sealed partial class ChatUIController : UIController
     private void AddSpeechBubble(ChatMessage msg, SpeechBubble.SpeechType speechType)
     {
         var ent = EntityManager.GetEntity(msg.SenderEntity);
-
+        if (ent == EntityUid.Invalid) return;
         if (!EntityManager.EntityExists(ent))
         {
             _sawmill.Debug("Got local chat message with invalid sender entity: {0}", msg.SenderEntity);
@@ -865,14 +865,7 @@ public sealed partial class ChatUIController : UIController
             }
         }
 
-        // Local messages that have an entity attached get a speech bubble - unless HideChat says
-        // this message shouldn't be visible at all, matching the same check just above for the
-        // log/history. Previously this switch ran unconditionally regardless of HideChat, which
-        // is why a HideChat-flagged "say" message (which still gets delivered to the client,
-        // just flagged - unlike whisper, whose sender skips delivery outright for anything other
-        // than a Full range result) would still show a bubble even though its log entry was
-        // correctly suppressed.
-        if (!speechBubble || msg.SenderEntity == default || msg.HideChat)
+        if (!speechBubble || msg.SenderEntity == default)
             return;
 
         switch (msg.Channel)
@@ -886,7 +879,7 @@ public sealed partial class ChatUIController : UIController
                 break;
 
             case ChatChannel.Dead:
-                if (_ghost is not { IsGhost: true})
+                if (_ghost is not { IsGhost: true })
                     break;
 
                 if (_ghost.GhostVisibility)

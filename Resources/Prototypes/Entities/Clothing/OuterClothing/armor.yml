@@ -31,6 +31,11 @@
     iconVisuals:
     - sprite: /Textures/_Funkystation/Effects/blood.rsi
       state: armorbloodicon
+  - type: Upgradeable
+    chooseOneUpgrades:
+      ArmorMarine : 0
+      ArmorPrecursor : 0
+      ArmorShadow : 0
 
 #Standard armor vest, allowed for security only
 - type: entity
@@ -213,6 +218,39 @@
         Slash: 0.7
         Piercing: 0.5
         Heat: 0.9
+
+
+#Persistence 14
+- type: entity
+  parent: ClothingOuterVestWeb
+  id: ClothingOuterVestNT
+  name: Nanotrasen vest
+  description: A specialized vest designed by Nanotrasen.
+  components:
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Vests/pressvest.rsi
+    layers:
+    - state: icon
+    - state: icon-unshaded # See ClothingOuterVestHazard for why we double-add these unshaded states this way
+      shader: unshaded
+    - state: icon-unshaded
+      shader: shaded
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Vests/pressvest.rsi
+    clothingVisuals:
+      outerClothing:
+      - state: equipped-OUTERCLOTHING
+      - state: equipped-OUTERCLOTHING-unshaded
+        shader: unshaded
+      - state: equipped-OUTERCLOTHING-unshaded
+        shader: shaded
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.5
+        Heat: 0.5
 
 
 # Armor covering multiple body parts including limbs

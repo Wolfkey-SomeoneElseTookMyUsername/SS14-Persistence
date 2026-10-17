@@ -1,7 +1,9 @@
 using Content.Server.Cargo.Components;
+using Content.Server.Chat.Systems;
 using Content.Server.CrewAssignments.Systems;
 using Content.Server.NameIdentifier;
 using Content.Shared._Persistence14.Cargo;
+using Content.Shared._Persistence14.Resonance.Prototypes;
 using Content.Shared._Persistence14.Rumors.Systems;
 using Content.Shared.Access.Components;
 using Content.Shared.Atmos.Components;
@@ -41,6 +43,7 @@ public sealed partial class CargoSystem
     [Dependency] private EntityQuery<ContainerManagerComponent> _containerManagerQuery = default!;
     [Dependency] private EntityQuery<CargoBountyLabelComponent> _cargoBountyLabelQuery = default!;
     [Dependency] private readonly RumorsSystem _rumors = default!;
+    [Dependency] private ChatSystem _chat = default!;
 
     private static readonly ProtoId<NameIdentifierGroupPrototype> BountyNameIdentifierGroup = "Bounty";
 
@@ -388,12 +391,12 @@ public sealed partial class CargoSystem
             _rumors.CompleteBounty(rumorGetter, bounty);
         }
 
-        if (TryComp<TradeStationComponent>(station, out var tradeStation))
-        {
-            tradeStation.ExperiencePoints += proto.SuccessXP;
-            if (tradeStation.ExperiencePoints < 0)
-                tradeStation.ExperiencePoints = 0;
-        }
+        //if (TryComp<TradeStationComponent>(station, out var tradeStation))
+        //{
+        //    tradeStation.ExperiencePoints += proto.SuccessXP;
+        //    if (tradeStation.ExperiencePoints < 0)
+        //        tradeStation.ExperiencePoints = 0;
+        //}
 
         TryRemoveBounty(station, bounty, false, actor);
         _adminLogger.Add(LogType.Action, LogImpact.Low, $"Bounty \"{bounty.Bounty}\" (id:{bounty.Id}) was completed");
@@ -696,7 +699,6 @@ public sealed partial class CargoSystem
         }
 
     }
-
     private void BountyRefresh(EntityUid uid, StationCargoBountyDatabaseComponent comp)
     {
         var station = _station.GetOwningStation(uid);
@@ -705,41 +707,14 @@ public sealed partial class CargoSystem
             TryComp<TradeStationComponent>(uid, out var tradeStation);
             if (tradeStation != null)
             {
-                foreach (var bounty in comp.Bounties)
+                if(TryComp<StationDataComponent>(station, out var stationData) && stationData != null)
                 {
-                    ProtoMan.Resolve(bounty.Bounty, out var bountyProto);
-                    if (bountyProto == null) continue;
-                    tradeStation.ExperiencePoints = Math.Max(tradeStation.ExperiencePoints - bountyProto.FailureXP, 0);
-                }
-                InfrastructureLevelPrototype? levelPrototype = GetTradeStationLevel(uid, tradeStation);
-                if (levelPrototype != null)
-                {
-                    if (levelPrototype.Income > 0)
-                    {
-                        TryComp<StationBankAccountComponent>(station, out var owningBank);
-                        UpdateBankAccount((station.Value, owningBank), levelPrototype.Income, "Cargo");
-                    }
-                    else if (levelPrototype.Income < 0)
-                    {
-                        TryComp<StationBankAccountComponent>(station, out var bank);
-                        var accountBalance = GetBalanceFromAccount((station.Value, bank), "Cargo");
-                        var cost = -levelPrototype.Income;
-                        if (cost > accountBalance) // Not enough balance
-                        {
-                            tradeStation.ExperiencePoints = 0;
-                            _station.RemoveGridFromStation(station.Value, uid);
-                        }
-                        else
-                        {
-                            UpdateBankAccount((station.Value, bank), levelPrototype.Income, "Cargo");
-                        }
-                    }
+                    var earnedResonance = tradeStation.ExperiencePoints * 10;
+                    stationData.StoredResonance += earnedResonance;
+                    _chat.DispatchStationAnnouncement(station.Value, $"The bounties for {Name(uid)} have refreshed. {Name(station.Value)} has gained $${earnedResonance} Resonance.", "Sector News");
                 }
             }
-
         }
-
-
         RerollBountyDatabase((uid, comp));
     }
 }

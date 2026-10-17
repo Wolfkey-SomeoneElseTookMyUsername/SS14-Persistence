@@ -1,4 +1,5 @@
 using Content.Shared.Access.Components;
+using Content.Shared.Construction.Components;
 using Content.Shared.CrewAccesses.Components;
 using Content.Shared.CrewAssignments.Components;
 using Content.Shared.CrewRecords.Components;
@@ -60,8 +61,19 @@ public sealed partial class AccessReaderSystem : EntitySystem
         SubscribeLocalEvent<AccessReaderComponent, SetupAccessList>(OnSetupAccessList);
         SubscribeLocalEvent<AccessReaderComponent, ComponentGetState>(OnGetState);
         SubscribeLocalEvent<AccessReaderComponent, ComponentHandleState>(OnHandleState);
+        SubscribeLocalEvent<AccessReaderComponent, UnanchorAttemptEvent>(OnUnanchorAttempt);
 
         Subs.SubscribeWithRelay<ShowAccessReaderSettingsComponent, ShowAccessReaderSettingsEvent>(OnAccessRead); // Moffstation
+    }
+
+    private void OnUnanchorAttempt(Entity<AccessReaderComponent> ent, ref UnanchorAttemptEvent args)
+    {
+        if (!ent.Comp.BlockUnanchor) return;
+        if (!IsAllowed(args.User, ent, ent.Comp))
+        {
+            args.FailMessage = "The access reader prevent you from unanchoring this; Access Denied.";
+            args.Cancel();
+        }
     }
 
     // Moffstation - Begin - Access reader by event
@@ -619,6 +631,63 @@ public sealed partial class AccessReaderSystem : EntitySystem
         }
 
         return (ICollection<ProtoId<AccessLevelPrototype>>?)tags ?? Array.Empty<ProtoId<AccessLevelPrototype>>();
+    }
+    public ICollection<int> FindAccessTagsPersistent(EntityUid targetUID, EntityUid owningStationUID)
+    {
+        HashSet<EntityUid>? items = null;
+        HashSet<int>? tags = null;
+
+        //owning person redundant for now but couldnt find an altentive function and maybe it could possible be used with personalacces
+        _station.GetOwning(owningStationUID, out var station, out var owningPerson);
+        if (!TryComp<CrewAssignmentsComponent>(owningStationUID, out var crewAssignments)) return (ICollection<int>?)tags ?? Array.Empty<int>();
+        if (!TryComp<CrewRecordsComponent>(owningStationUID, out var crewRecords)) return (ICollection<int>?)tags ?? Array.Empty<int>();
+
+        items ??= FindPotentialAccessItems(targetUID);
+
+        foreach (var ent in items)
+        {
+            if (TryComp<IdCardComponent>(ent, out var idComp))
+            {
+                if (!crewRecords.TryGetRecord(idComp.FullName ?? "", out var record) || record == null) continue;
+                if (crewAssignments.TryGetAssignment(record.AssignmentID, out var assignment) && assignment != null)
+                {
+                    if (tags == null) tags = new HashSet<int>();
+                    tags.Add(record.AssignmentID);
+                }
+            }
+            else if (TryComp<PdaComponent>(ent, out var pdaComp))
+            {
+                if (pdaComp != null && pdaComp.ContainedId != null)
+                {
+                    if (TryComp<IdCardComponent>(pdaComp.ContainedId, out var idComp2))
+                    {
+                        if (!crewRecords.TryGetRecord(idComp2.FullName ?? "", out var record) || record == null) continue;
+                        if (crewAssignments.TryGetAssignment(record.AssignmentID, out var assignment) && assignment != null)
+                        {
+                            if (tags == null) tags = new HashSet<int>();
+                            tags.Add(record.AssignmentID);
+                        }
+                    }
+                }
+            }
+            //FindAccessTagsItem(ent, ref tags, ref owned);
+        }
+
+        return (ICollection<int>?)tags ?? Array.Empty<int>();
+    }
+
+    public string GetAssignmentNameFromId(EntityUid entityUID, int assignmentId)
+    {
+        string assignmentName = "Invalid";
+        var stationUID = _station.GetOwningStation(entityUID);
+        if (!TryComp<CrewAssignmentsComponent>(stationUID, out var crewAssignments)) return assignmentName;
+
+
+        crewAssignments.TryGetAssignment(assignmentId, out var assignment);
+        if (assignment == null) return assignmentName;
+        assignmentName = assignment.Name;
+
+        return assignmentName;
     }
 
     /// <summary>
