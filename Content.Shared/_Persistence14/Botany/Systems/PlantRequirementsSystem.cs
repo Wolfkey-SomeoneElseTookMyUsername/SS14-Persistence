@@ -8,6 +8,7 @@ using Content.Shared.FixedPoint;
 using Content.Shared.Popups;
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.Shared._Persistence14.Botany.Systems;
 
@@ -94,14 +95,11 @@ public sealed partial class PlantRequirementsSystem : EntitySystem
             var quantityProto = _prototypeManager.Index(chemQuantity.Id);
             foreach (var (nutrient, requirement) in quantityProto.Requirements)
             {
-                if (!totalRequirement.TryAdd(nutrient, requirement))
-                {
-                    var newRequirement = totalRequirement[nutrient];
-                    newRequirement.Requirement += requirement.Requirement * yield;
-                    newRequirement.BonusRequirement += requirement.BonusRequirement * yield;
-                    newRequirement.BonusAmount += requirement.BonusAmount * yield;
-                    totalRequirement[nutrient] = newRequirement;
-                }
+                var newRequirement = totalRequirement.GetOrNew(nutrient);
+                newRequirement.Requirement += requirement.Requirement * yield;
+                newRequirement.BonusRequirement += requirement.BonusRequirement * yield;
+                newRequirement.BonusAmount += requirement.BonusAmount * yield;
+                totalRequirement[nutrient] = newRequirement;
             }
         }
 
