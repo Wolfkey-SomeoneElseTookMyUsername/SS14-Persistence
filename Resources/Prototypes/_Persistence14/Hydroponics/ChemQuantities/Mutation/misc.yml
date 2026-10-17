@@ -57,3 +57,15 @@
     Fertilizer:
       bonusRequirement: 0.6
       bonusAmount: 3
+
+- type: plantChemQuantity
+  id: RandomBlood
+  baseAmount: 2.5
+  requirements:
+    Water:
+      requirement: 2.5
+    Protein:
+      requirement: 0.5
+    Iron:
+      bonusrequirement: 0.1
+      bonusAmount: 2.5

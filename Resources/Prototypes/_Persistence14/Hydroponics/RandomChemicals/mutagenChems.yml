@@ -2,7 +2,52 @@
 - type: weightedRandomFillPlantChemical
   id: RandomPickChemicalMutagen
   fills:
-
+  # Weight 2 chemicals
+  - quantityId: RandomChloralHydrate
+    weight: 2
+    reagents:
+    - ChloralHydrate
+  - quantityId: RandomIpecac
+    weight: 2
+    reagents:
+    - Ipecac
+  - quantityId: RandomPax
+    weight: 2
+    reagents:
+    - Pax
+  - quantityId: RandomHistamine
+    weight: 2
+    reagents:
+    - Histamine
+  - quantityId: RandomBlood
+    weight: 2
+    reagents:
+    - Blood
+  - quantityId: RandomPhenol
+    weight: 2
+    reagents:
+    - Phenol
+  - quantityId: RandomCarbon
+    weight: 2
+    reagents:
+    - Carbon
+  - quantityId: BasicSmokable
+    weight: 2
+    reagents:
+    - THC
+    - Nicotine
+  - quantityId: RandomIceCream
+    weight: 2
+    reagents:
+    - IceCream
+  - quantityId: RandomSoda
+    weight: 2
+    reagents:
+    - Cola
+  - quantityId: RandomBleach
+    weight: 2
+    reagents:
+    - Bleach
 # Weight 3 chemicals
   - quantityId: RandomNorepinephricAcid
     weight: 3
