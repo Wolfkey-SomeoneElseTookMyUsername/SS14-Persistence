@@ -2,7 +2,24 @@
 - type: weightedRandomFillPlantChemical
   id: RandomPickChemicalMutagen
   fills:
-  # Weight 1 chemicals
+  # Weight 0.5 chemicals
+  - quantityId: RandomImpedrezene
+    weight: 0.5
+    reagents:
+    - Impedrezene
+  - quantityId: RandomHeartbreakerToxin
+    weight: 0.5
+    reagents:
+    - HeartbreakerToxin
+  - quantityId: RandomHonk
+    weight: 0.5
+    reagents:
+    - Honk
+  - quantityId: RandomBuzzochloricBees
+    weight: 0.5
+    reagents:
+    - BuzzochloricBees
+    # Weight 1 chemicals
   - quantityId: RandomToxin
     weight: 1
     reagents:
