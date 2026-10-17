@@ -2,6 +2,99 @@
 - type: weightedRandomFillPlantChemical
   id: RandomPickChemicalMutagen
   fills:
+
+# Weight 3 chemicals
+  - quantityId: RandomNorepinephricAcid
+    weight: 3
+    reagents:
+    - NorepinephricAcid
+  - quantityId: RandomSaline
+    weight: 3
+    reagents:
+    - Saline
+  - quantityId: RandomCryptobiolin
+    weight: 3
+    reagents:
+    - Cryptobiolin
+  - quantityId: RandomEZNutrient
+    weight: 3
+    reagents:
+    - EZNutrient
+  - quantityId: RandomAmmonia
+    weight: 3
+    reagents:
+    - Ammonia
+  - quantityId: RandomRobustHarvest
+    weight: 3
+    reagents:
+    - RobustHarvest
+  - quantityId: RandomSpaceLube
+    weight: 3
+    reagents:
+    - SpaceLube
+  - quantityId: RandomTheobromine
+    weight: 3
+    reagents:
+    - Theobromine
+  - quantityId: BloonionAllicin
+    weight: 3
+    reagents:
+    - Allicin
+  - quantityId: RandomAcetone
+    weight: 3
+    reagents:
+    - Acetone
+  - quantityId: RandomAsh
+    weight: 3
+    reagents:
+    - Ash
+  - quantityId: RandomSodiumCarbonate
+    weight: 3
+    reagents:
+    - SodiumCarbonate
+  - quantityId: RandomSpaceMirage
+    weight: 3
+    reagents:
+    - SpaceDrugs
+  - quantityId: RandomMiscDrink
+    weight: 3
+    reagents:
+    - JuiceBerryPoison
+    - Posca
+    - Coffee
+  - quantityId: RandomSoda
+    weight: 3
+    reagents:
+    - Pilk
+    - FourteenLoko
+    - LemonLime
+    - LemonLimeCranberry
+  - quantityId: RandomEthanol
+    weight: 3
+    reagents:
+    - Ethanol
+  - quantityId: BungoEnzyme
+    weight: 3
+    reagents:
+    - Enzyme
+  - quantityId: RandomVinegar
+    weight: 3
+    reagents:
+    - Vinegar
+  - quantityId: RandomPotassium
+    weight: 3
+    reagents:
+    - Potassium
+  - quantityId: RandomFluorine
+    weight: 3
+    reagents:
+    - Fluorine
+  - quantityId: RandomAlcoholic
+    weight: 3
+    reagents:
+    - Wine
+    - Beer
+# Weight 3.5 chemicals
   - quantityId: BluePumpkinVitamin
     weight: 3.5
     reagents:
