@@ -1,0 +1,11 @@
+- type: weightedRandomFillPlantChemical
+  id: RandomPickChemicalMutagen
+  fills:
+  - quantityId: BluePumpkinVitamin
+    weight: 3.5
+    reagents:
+    - Vitamin
+  - quantityId: RandomOil
+    weight: 3.5
+    reagents:
+    - Oil
