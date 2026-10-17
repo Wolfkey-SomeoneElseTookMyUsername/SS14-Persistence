@@ -135,7 +135,7 @@ public sealed partial class PlantSystem : EntitySystem
                 if (requirement.BonusAmount != 0)
                 {
                     markup += Loc.GetString("plant-component-nutrient-bonus-message",
-                        ("bonusNutrients", requirement.BonusRequirement),
+                        ("bonusNutrients", requirement.Requirement + requirement.BonusRequirement),
                         ("fulfilled", bonusFulfilled));
                 }
                 args.PushMarkup(markup);
