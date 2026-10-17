@@ -72,7 +72,7 @@
       bonusAmount: 1.5
 
 - type: plantChemQuantity
-  id: RandomAcetone
+  id: RandomIpecac
   baseAmount: 2
   requirements: # TODO: Replace placeholder requirements
     Nutrient:
