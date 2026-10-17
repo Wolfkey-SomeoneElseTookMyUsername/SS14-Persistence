@@ -198,7 +198,9 @@ public sealed partial class PlantTraySystem : EntitySystem
         if (!ent.Comp.Nutrients.TryAdd(nutrient, amount))
             ent.Comp.Nutrients[nutrient] += amount;
 
-        //ent.Comp.Nutrients[nutrient] = MathHelper.Clamp(ent.Comp.Nutrients[nutrient], FixedPoint2.Zero);
+        if (ent.Comp.Nutrients[nutrient] <= FixedPoint2.Zero)
+            ent.Comp.Nutrients.Remove(nutrient);
+
         DirtyField(ent, nameof(ent.Comp.Nutrients));
     }
 

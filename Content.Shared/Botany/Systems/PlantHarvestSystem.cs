@@ -18,6 +18,7 @@ public sealed partial class PlantHarvestSystem : EntitySystem
     [Dependency] private BotanySystem _botany = default!;
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private PlantSystem _plant = default!;
+    [Dependency] private PlantTraySystem _tray = default!; // Persistence
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private PlantHolderSystem _plantHolder = default!;
     [Dependency] private PlantRequirementsSystem _requirements = default!; // Persistence
@@ -142,6 +143,11 @@ public sealed partial class PlantHarvestSystem : EntitySystem
 
         var position = Transform(user).Coordinates;
         _botany.SpawnProduce(ent.Owner, position, totalYield, tray.Comp.Nutrients); // Persistence: Provide tray nutrients
+
+        foreach (var (nutrientId, requirement) in _requirements.GetAllRequirements(ent.Owner))
+        {
+            _tray.AdjustNutrient(tray.AsNullable(), -(requirement.Requirement + requirement.BonusRequirement), nutrientId);
+        }
 
         ent.Comp.ReadyForHarvest = false;
         ent.Comp.LastHarvest = ent.Comp.Age;
