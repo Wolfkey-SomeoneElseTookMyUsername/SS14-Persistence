@@ -766,7 +766,7 @@
   color: "#435166"
   plantMetabolism:
   - !type:PlantMutateChemicals
-    randomPickBotanyReagent: EvilRandomFillSolution
+    randomPickBotanyReagent: RandomPickChemicalVestine
   - !type:PlantAdjustNutrient
     amount: 1
     nutrient: Toxin
