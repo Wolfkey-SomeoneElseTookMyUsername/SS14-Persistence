@@ -24,6 +24,26 @@ public sealed partial class PlantChemQuantityPrototype : IPrototype
     [DataField] public ToleranceModifier? PressureToleranceModifier;
 }
 
+/// <summary>
+/// Prototype used to track the amount of a gas a plant generates, and the requirements and tolerance modifiers of the plant.
+/// This is a prototype instead of a struct to allow plants to be changed without leaving behind legacy plants with the old values.
+/// </summary>
+[Prototype]
+[DataDefinition]
+public sealed partial class PlantGasQuantityPrototype : IPrototype
+{
+    /// <inheritdoc/>
+    [IdDataField]
+    public string ID { get; private set; } = default!;
+
+    [DataField] public float BaseAmount;
+
+    [DataField] public Dictionary<ProtoId<PlantNutrientPrototype>, NutrientRequirement> Requirements; // TODO: Make gasses actually use these requirements
+
+    [DataField] public ToleranceModifier? HeatToleranceModifier;
+    [DataField] public ToleranceModifier? PressureToleranceModifier;
+}
+
 [DataDefinition]
 public partial struct NutrientRequirement
 {

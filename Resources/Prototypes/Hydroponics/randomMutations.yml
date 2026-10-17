@@ -245,10 +245,10 @@
       baseOdds: 0.0145
       persists: false
       effect: !type:PlantMutateExudeGases
-    - name: ChangeConsumeGasses
-      baseOdds: 0.0036
-      persists: false
-      effect: !type:PlantMutateConsumeGases
+#    - name: ChangeConsumeGasses # Persistence: Plant nutrient rework
+#      baseOdds: 0.0036
+#      persists: false
+#      effect: !type:PlantMutateConsumeGases
     - name: ChangeHarvest
       baseOdds: 0.036
       persists: false

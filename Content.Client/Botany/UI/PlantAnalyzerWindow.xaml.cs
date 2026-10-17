@@ -197,6 +197,7 @@ public sealed partial class PlantAnalyzerWindow : FancyWindow
             return;
 
         Consumed.ClearDisplay();
+        /* Persistence: Remove gas consumption
         var consumed = gases.ConsumeGasses
             .Where(x => x.Value > 0f)
             .Select(x => new GasEntry(x.Key, x.Value))
@@ -208,11 +209,12 @@ public sealed partial class PlantAnalyzerWindow : FancyWindow
 
         if (consumed.Length == 0)
             Consumed.ShowEmptyMessage();
+            */
 
         Exuded.ClearDisplay();
         var exuded = gases.ExudeGasses
-            .Where(x => x.Value > 0f)
-            .Select(x => new GasEntry(x.Key, x.Value))
+            //.Where(x => x.Value > 0f) Persistence: Comment this out
+            .Select(x => new GasEntry(x.Key, _prototypeManager.Index(x.Value).BaseAmount))
             .ToArray();
         foreach (var gas in exuded)
         {
