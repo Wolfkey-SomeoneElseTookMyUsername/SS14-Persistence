@@ -66,5 +66,6 @@ public sealed partial class PlantTolerancesSystem : EntitySystem
             }
         }
 
+        Dirty(ent);
     }
 }
